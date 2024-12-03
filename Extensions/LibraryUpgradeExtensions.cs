@@ -25,7 +25,7 @@ public static class LibraryUpgradeExtensions
         // Rebuild the version string
         return $"{versionParts[0]}.{versionParts[1]}.{patchVersion}";
     }
-    public static async Task<bool> AlreadyUpgradedAsync(this LibraryNetUpgradeModel upgradeModel, DotNetUpgradeConfigurationModel dotNetModel)
+    public static async Task<bool> AlreadyUpgradedAsync(this LibraryNetUpgradeModel upgradeModel, DotNetUpgradeBasicConfig dotNetModel)
     {
         if (dotNetModel.IsTestMode)
         {

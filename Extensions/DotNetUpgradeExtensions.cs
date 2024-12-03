@@ -1,9 +1,9 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Extensions;
 internal static class DotNetUpgradeExtensions
 {
-    public static bool NeedsToUpdateVersion(this DotNetUpgradeConfigurationModel config)
+    public static bool NeedsToUpdateVersion(this int version)
     {
-        int targetVersion = config.NetVersion + 1;
+        int targetVersion = version + 1;
         return DotNetVersionChecker.IsDotNetVersionInstalled(targetVersion);
     }
 }

@@ -24,8 +24,7 @@ public class PackageFeedManager(INugetPacker packer) : IPackageFeedManager
         }
         ff1.CreateFolder(feedPath);
     }
-
-    void IPackageFeedManager.InitializeFeed(DotNetUpgradeConfigurationModel upgradeModel)
+    void IPackageFeedManager.InitializeFeed(DotNetUpgradeBasicConfig upgradeModel)
     {
         if (upgradeModel.IsTestMode)
         {

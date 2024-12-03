@@ -1,7 +1,7 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class FeedPathResolver(IPostBuildCommandStrategy postBuildCommand) : IFeedPathResolver
 {
-    string IFeedPathResolver.GetFeedPath(LibraryNetUpgradeModel upgradeModel, DotNetUpgradeConfigurationModel netModel)
+    string IFeedPathResolver.GetFeedPath(LibraryNetUpgradeModel upgradeModel, DotNetUpgradeBasicConfig netModel)
     {
         // Handle Test Mode
         if (netModel.IsTestMode)

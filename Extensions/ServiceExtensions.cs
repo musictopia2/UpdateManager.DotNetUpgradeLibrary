@@ -16,7 +16,7 @@ public static class ServiceExtensions
         }
         if (useFileBased)
         {
-            services.AddSingleton<IDotNetVersionInfoRepository, FileDotNetVersionInfoManager>()
+            services.AddSingleton<IDotNetUpgradeConfigReader, FileDotNetVersionInfoManager>()
                 .AddSingleton<INetVersionUpdateContext, FileNetVersionUpdateContext>()
                 .AddSingleton<IPackagesContext, FilePackagesContext>();
         }
