@@ -12,7 +12,6 @@ global using jj1 = CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.Jso
 global using CommonBasicLibraries.BasicDataSettingsAndProcesses;
 global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.BasicExtensions;
 global using System.Text;
-global using CommonBasicLibraries.BasicDateTimeProcesses;
 global using UpdateManager.DotNetUpgradeLibrary.Models;
 global using UpdateManager.CoreLibrary.TemplateHelpers;
 global using UpdateManager.DotNetUpgradeLibrary.Interfaces;

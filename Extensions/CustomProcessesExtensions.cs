@@ -1,7 +1,7 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Extensions;
 public static class CustomProcessesExtensions
 {
-    public static void CheckForTesting(this DotNetVersionUpgradeModel model)
+    public static void CheckForTesting(this DotNetUpgradeConfigurationModel model)
     {
         if (model.IsTestMode)
         {

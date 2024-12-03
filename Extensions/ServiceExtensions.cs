@@ -3,13 +3,12 @@ public static class ServiceExtensions
 {
     public static IServiceCollection RegisterDotNetUpgradeServices(this IServiceCollection services, bool useFileBased = true, bool alsoBuilder = true, Action<IServiceCollection>? additionalServices = null)
     {
-        services.AddSingleton<IDateOnlyPicker, RealDatePicker>()
-            .AddSingleton<IFeedPathResolver, FeedPathResolver>()
+        services.AddSingleton<IFeedPathResolver, FeedPathResolver>()
             .AddSingleton<ITestFileManager, TestFileManager>()
             .AddSingleton<ITemplateNetUpdater, TemplateNetUpdater>()
             .AddSingleton<LibraryDotNetUpgradeCommitter, LibraryDotNetUpgradeCommitter>()
             .AddSingleton<ILibraryNetUpdateModelGenerator, LibraryNetUpdateModelGenerator>()
-            .AddSingleton<IYearlyFeedManager, YearlyFeedManager>()
+            .AddSingleton<IPackageFeedManager, PackageFeedManager>()
             .AddSingleton<DotNetUpgradeCoordinator>();
         if (alsoBuilder)
         {

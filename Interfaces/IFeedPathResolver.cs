@@ -1,5 +1,5 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Interfaces;
 public interface IFeedPathResolver
 {
-    string GetFeedPath(LibraryNetUpdateModel upgradeModel, DotNetVersionUpgradeModel netModel);
+    string GetFeedPath(LibraryNetUpgradeModel upgradeModel, DotNetUpgradeConfigurationModel netModel);
 }

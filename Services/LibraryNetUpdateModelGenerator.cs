@@ -1,10 +1,10 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class LibraryNetUpdateModelGenerator(IPackagesContext packageContext) : ILibraryNetUpdateModelGenerator
 {
-    async Task<BasicList<LibraryNetUpdateModel>> ILibraryNetUpdateModelGenerator.CreateLibraryNetUpdateModelListAsync()
+    async Task<BasicList<LibraryNetUpgradeModel>> ILibraryNetUpdateModelGenerator.CreateLibraryNetUpdateModelListAsync()
     {
         BasicList<NuGetPackageModel> packages = await packageContext.GetPackagesAsync();
-        BasicList<LibraryNetUpdateModel> output = [];
+        BasicList<LibraryNetUpgradeModel> output = [];
         // Check if we need to filter packages for testing
         bool includeOnlyTests = LibraryInclusionGlobals.LibrariesToIncludeForTest.Count > 0;
         foreach (var package in packages)
@@ -18,7 +18,7 @@ public class LibraryNetUpdateModelGenerator(IPackagesContext packageContext) : I
             {
                 continue; // Skip this package as it's not in the test list
             }
-            LibraryNetUpdateModel upgrade = new()
+            LibraryNetUpgradeModel upgrade = new()
             {
                 PackageType = package.FeedType,
                 PackageName = package.PackageName,

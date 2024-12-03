@@ -1,7 +1,7 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class LibraryDotNetUpgradeCommitter(IPostUpgradeProcessHandler handler) : ILibraryDotNetUpgradeCommitter
 {
-    async Task<bool> ILibraryDotNetUpgradeCommitter.CommitAndPushToGitHubAsync(LibraryNetUpdateModel updateModel, DotNetVersionUpgradeModel versionUpgradeModel, CancellationToken cancellationToken)
+    async Task<bool> ILibraryDotNetUpgradeCommitter.CommitAndPushToGitHubAsync(LibraryNetUpgradeModel updateModel, DotNetUpgradeConfigurationModel versionUpgradeModel, CancellationToken cancellationToken)
     {
         if (versionUpgradeModel.IsTestMode)
         {

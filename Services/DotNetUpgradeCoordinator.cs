@@ -1,22 +1,21 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class DotNetUpgradeCoordinator(
     IFeedPathResolver feedPathResolver,
-    IDateOnlyPicker picker,
     ITestFileManager testFileManager,
     IDotNetVersionInfoRepository dotNetVersionInfoManager,
     IPreUpgradeProcessHandler preUpgradeProcessHandler,
     INetVersionUpdateContext netVersionUpdateContext,
     ILibraryDotNetUpgraderBuild libraryDotNetUpgraderBuild,
-    IYearlyFeedManager yearlyFeedManager,
+    IPackageFeedManager yearlyFeedManager,
     ILibraryDotNetUpgradeCommitter libraryDotNetUpgradeCommitter,
     IPostBuildCommandStrategy postBuildCommandStrategy
     )
 {
-    public async Task<UpgradeProcessState> GetUpgradeStatusAsync(BasicList<LibraryNetUpdateModel> libraries)
+    public async Task<UpgradeProcessState> GetUpgradeStatusAsync(BasicList<LibraryNetUpgradeModel> libraries)
     {
-        DotNetVersionUpgradeModel netConfig = await dotNetVersionInfoManager.GetVersionInfoAsync();
+        DotNetUpgradeConfigurationModel netConfig = await dotNetVersionInfoManager.GetVersionInfoAsync();
         bool needsUpdate;
-        needsUpdate = netConfig.NeedsToUpdateVersion(picker);
+        needsUpdate = netConfig.NeedsToUpdateVersion();
         if (needsUpdate)
         {
             return new(EnumUpgradePhase.PendingUpdate, netConfig);
@@ -31,7 +30,7 @@ public class DotNetUpgradeCoordinator(
         }
         return new(EnumUpgradePhase.InProgress, netConfig);
     }
-    public async Task<BasicList<LibraryNetUpdateModel>> GetLibrariesAsync(bool testing)
+    public async Task<BasicList<LibraryNetUpgradeModel>> GetLibrariesAsync(bool testing)
     {
         if (netVersionUpdateContext.IsLibraryDataPresent() == false)
         {

@@ -1,25 +1,9 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Extensions;
 internal static class DotNetUpgradeExtensions
 {
-    public static bool NeedsToUpdateVersion(this DotNetVersionUpgradeModel config, IDateOnlyPicker date)
+    public static bool NeedsToUpdateVersion(this DotNetUpgradeConfigurationModel config)
     {
-        DateOnly currentDate = date.GetCurrentDate;
-        DateOnly lastUpdate = config.LastUpdated;
-        DateOnly dateNeeded;
-        int yearNeeded;
-        if (currentDate.Year == lastUpdate.Year)
-        {
-            yearNeeded = lastUpdate.Year + 1;
-        }
-        else
-        {
-            yearNeeded = currentDate.Year;
-        }
-        dateNeeded = new(yearNeeded, 11, 1); //november 1 at the least.
-        if (currentDate >= dateNeeded)
-        {
-            return true;
-        }
-        return false;
+        int possibleNewVersion = config.NetVersion + 1;
+        return DotNetVersionChecker.IsDotNetVersionInstalled(possibleNewVersion);
     }
 }

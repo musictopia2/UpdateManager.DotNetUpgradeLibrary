@@ -1,10 +1,10 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 internal static class LibraryDependencyResolver
 {
-    public static BasicList<LibraryNetUpdateModel> ResolveDependencies(BasicList<LibraryNetUpdateModel> libraries)
+    public static BasicList<LibraryNetUpgradeModel> ResolveDependencies(BasicList<LibraryNetUpgradeModel> libraries)
     {
         // Process the dependencies for each library
-        foreach (LibraryNetUpdateModel library in libraries)
+        foreach (LibraryNetUpgradeModel library in libraries)
         {
             library.Dependencies = GetDependencies(library, libraries);
             library.Dependencies.RemoveAllOnly(x => x == library.PackageName); // Can't depend on itself.
@@ -15,7 +15,7 @@ internal static class LibraryDependencyResolver
     }
 
     // Helper method to get dependencies from XML for each library
-    private static BasicList<string> GetDependencies(LibraryNetUpdateModel library, BasicList<LibraryNetUpdateModel> list)
+    private static BasicList<string> GetDependencies(LibraryNetUpgradeModel library, BasicList<LibraryNetUpgradeModel> list)
     {
         XElement source = XElement.Load(library.CsProjPath);
         BasicList<string> dependencies = [];
@@ -33,7 +33,7 @@ internal static class LibraryDependencyResolver
         }
         return dependencies;
     }
-    private static void FinishScan(BasicList<LibraryNetUpdateModel> list)
+    private static void FinishScan(BasicList<LibraryNetUpgradeModel> list)
     {
         bool changesMade;
         // Create a dictionary for faster lookup by library name (ignoring case)

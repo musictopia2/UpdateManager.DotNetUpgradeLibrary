@@ -1,7 +1,7 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class LibraryDotNetUpgraderBuild(IPostBuildCommandStrategy postBuildStrategy) : ILibraryDotNetUpgraderBuild
 {
-    async Task<bool> ILibraryDotNetUpgraderBuild.BuildLibraryAsync(LibraryNetUpdateModel libraryModel, DotNetVersionUpgradeModel dotNetModel, BasicList<LibraryNetUpdateModel> libraries, CancellationToken cancellationToken)
+    async Task<bool> ILibraryDotNetUpgraderBuild.BuildLibraryAsync(LibraryNetUpgradeModel libraryModel, DotNetUpgradeConfigurationModel dotNetModel, BasicList<LibraryNetUpgradeModel> libraries, CancellationToken cancellationToken)
     {
         CsProjEditor editor = new(libraryModel.CsProjPath);
         string netVersion = bb1.Configuration!.GetNetVersion();
@@ -30,7 +30,7 @@ public class LibraryDotNetUpgraderBuild(IPostBuildCommandStrategy postBuildStrat
         isSuccess = await ProjectBuilder.BuildProjectAsync(libraryModel.CsProjPath, "/p:SkipPostBuild=true", cancellationToken);
         return isSuccess;
     }
-    async Task<bool> ILibraryDotNetUpgraderBuild.AlreadyUpgradedAsync(LibraryNetUpdateModel upgradeModel, DotNetVersionUpgradeModel dotNetModel)
+    async Task<bool> ILibraryDotNetUpgraderBuild.AlreadyUpgradedAsync(LibraryNetUpgradeModel upgradeModel, DotNetUpgradeConfigurationModel dotNetModel)
     {
         return await upgradeModel.AlreadyUpgradedAsync(dotNetModel);
     }

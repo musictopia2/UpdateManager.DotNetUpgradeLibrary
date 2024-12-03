@@ -2,18 +2,18 @@
 public class FileNetVersionUpdateContext(ILibraryNetUpdateModelGenerator generator) : INetVersionUpdateContext
 {
     private static readonly string _libraryPath = bb1.Configuration!.GetLibraryPath();
-    async Task<BasicList<LibraryNetUpdateModel>> INetVersionUpdateContext.GetLibrariesForUpdateAsync()
+    async Task<BasicList<LibraryNetUpgradeModel>> INetVersionUpdateContext.GetLibrariesForUpdateAsync()
     {
-        BasicList<LibraryNetUpdateModel> list = await jj1.RetrieveSavedObjectAsync<BasicList<LibraryNetUpdateModel>>(_libraryPath);
+        BasicList<LibraryNetUpgradeModel> list = await jj1.RetrieveSavedObjectAsync<BasicList<LibraryNetUpgradeModel>>(_libraryPath);
         return list;
     }
     bool INetVersionUpdateContext.IsLibraryDataPresent()
     {
         return ff1.FileExists(_libraryPath);
     }
-    async Task<BasicList<LibraryNetUpdateModel>> INetVersionUpdateContext.ReprocessLibrariesForUpdateAsync()
+    async Task<BasicList<LibraryNetUpgradeModel>> INetVersionUpdateContext.ReprocessLibrariesForUpdateAsync()
     {
-        BasicList<LibraryNetUpdateModel> output = await generator.CreateLibraryNetUpdateModelListAsync();
+        BasicList<LibraryNetUpgradeModel> output = await generator.CreateLibraryNetUpdateModelListAsync();
         await jj1.SaveObjectAsync(_libraryPath, output);
         return output;
     }
@@ -21,7 +21,7 @@ public class FileNetVersionUpdateContext(ILibraryNetUpdateModelGenerator generat
     {
         await ff1.DeleteFileAsync(_libraryPath);
     }
-    async Task INetVersionUpdateContext.SaveUpdatedLibrariesAsync(BasicList<LibraryNetUpdateModel> list)
+    async Task INetVersionUpdateContext.SaveUpdatedLibrariesAsync(BasicList<LibraryNetUpgradeModel> list)
     {
         await jj1.SaveObjectAsync(_libraryPath, list);
     }

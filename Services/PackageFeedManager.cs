@@ -1,5 +1,5 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
-public class YearlyFeedManager(INugetPacker packer) : IYearlyFeedManager
+public class PackageFeedManager(INugetPacker packer) : IPackageFeedManager
 {
     private static string TestLocalKey => "TestLocal";
     private static string TestPublicKey => "TestPublic";
@@ -8,7 +8,7 @@ public class YearlyFeedManager(INugetPacker packer) : IYearlyFeedManager
         NuGetFeedConfiguration.RemoveFeed(TestLocalKey);
         NuGetFeedConfiguration.RemoveFeed(TestPublicKey); //if production, then can't even have those feeds anymore
     }
-    void IYearlyFeedManager.CleanupYearlyFeed(string feedPath)
+    void IPackageFeedManager.CleanupFeed(string feedPath)
     {
         if (ff1.DirectoryExists(feedPath))
         {
@@ -16,7 +16,7 @@ public class YearlyFeedManager(INugetPacker packer) : IYearlyFeedManager
         }
         ff1.CreateFolder(feedPath); //go ahead and create folder (to plan for future).
     }
-    void IYearlyFeedManager.ClearYearlyFeed(string feedPath)
+    void IPackageFeedManager.ClearFeed(string feedPath)
     {
         if (ff1.DirectoryExists(feedPath))
         {
@@ -25,7 +25,7 @@ public class YearlyFeedManager(INugetPacker packer) : IYearlyFeedManager
         ff1.CreateFolder(feedPath);
     }
 
-    void IYearlyFeedManager.InitializeYearlyFeeds(DotNetVersionUpgradeModel upgradeModel)
+    void IPackageFeedManager.InitializeFeed(DotNetUpgradeConfigurationModel upgradeModel)
     {
         if (upgradeModel.IsTestMode)
         {
@@ -50,7 +50,7 @@ public class YearlyFeedManager(INugetPacker packer) : IYearlyFeedManager
             throw; // Re-throw the exception to notify the caller
         }
     }
-    async Task<bool> IYearlyFeedManager.PublishPackageToYearlyFeedAsync(LibraryNetUpdateModel upgradeModel, string feedPath, CancellationToken cancellationToken)
+    async Task<bool> IPackageFeedManager.PublishPackageToFeedAsync(LibraryNetUpgradeModel upgradeModel, string feedPath, CancellationToken cancellationToken)
     {
         bool rets = await packer.CreateNugetPackageAsync(upgradeModel, true, cancellationToken);
         if (rets == false)

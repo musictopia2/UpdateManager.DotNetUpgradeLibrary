@@ -1,5 +1,5 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Interfaces;
 public interface ILibraryNetUpdateModelGenerator
 {
-    Task<BasicList<LibraryNetUpdateModel>> CreateLibraryNetUpdateModelListAsync();
+    Task<BasicList<LibraryNetUpgradeModel>> CreateLibraryNetUpdateModelListAsync();
 }

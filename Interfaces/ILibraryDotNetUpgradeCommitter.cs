@@ -1,5 +1,5 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Interfaces;
 public interface ILibraryDotNetUpgradeCommitter
 {
-    Task<bool> CommitAndPushToGitHubAsync(LibraryNetUpdateModel updateModel, DotNetVersionUpgradeModel versionUpgradeModel, CancellationToken cancellationToken = default);
+    Task<bool> CommitAndPushToGitHubAsync(LibraryNetUpgradeModel updateModel, DotNetUpgradeConfigurationModel versionUpgradeModel, CancellationToken cancellationToken = default);
 }

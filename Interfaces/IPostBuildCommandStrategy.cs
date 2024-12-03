@@ -1,5 +1,5 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Interfaces;
 public interface IPostBuildCommandStrategy
 {
-    bool ShouldRunPostBuildCommand(LibraryNetUpdateModel libraryModel);
+    bool ShouldRunPostBuildCommand(LibraryNetUpgradeModel libraryModel);
 }

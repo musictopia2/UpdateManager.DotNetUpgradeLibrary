@@ -25,7 +25,7 @@ public static class LibraryUpgradeExtensions
         // Rebuild the version string
         return $"{versionParts[0]}.{versionParts[1]}.{patchVersion}";
     }
-    public static async Task<bool> AlreadyUpgradedAsync(this LibraryNetUpdateModel upgradeModel, DotNetVersionUpgradeModel dotNetModel)
+    public static async Task<bool> AlreadyUpgradedAsync(this LibraryNetUpgradeModel upgradeModel, DotNetUpgradeConfigurationModel dotNetModel)
     {
         if (dotNetModel.IsTestMode)
         {
@@ -104,19 +104,19 @@ public static class LibraryUpgradeExtensions
             throw new CustomBasicException($"The path {nuspecPath} does not exist");
         }
     }
-    private static bool CheckLocalProductionFeed(LibraryNetUpdateModel upgradeModel, string netVersion)
+    private static bool CheckLocalProductionFeed(LibraryNetUpgradeModel upgradeModel, string netVersion)
     {
         string feedPath = bb1.Configuration!.GetPrivatePackagePath();
         string lastVersion = upgradeModel.Version.DecrementVersion();
         return FinishGettingNetVersion(feedPath, upgradeModel.PackageName, lastVersion, netVersion);
     }
-    private static bool CheckStagingFeed(LibraryNetUpdateModel upgradeModel, string netVersion)
+    private static bool CheckStagingFeed(LibraryNetUpgradeModel upgradeModel, string netVersion)
     {
         string feedPath = bb1.Configuration!.GetPrivatePackagePath();
         string lastVersion = upgradeModel.Version.DecrementVersion();
         return FinishGettingNetVersion(feedPath, upgradeModel.PackageName, lastVersion, netVersion);
     }
-    private static bool CheckDevelopmentFeed(LibraryNetUpdateModel upgradeModel, string netVersion)
+    private static bool CheckDevelopmentFeed(LibraryNetUpgradeModel upgradeModel, string netVersion)
     {
         string feedPath = bb1.Configuration!.GetDevelopmentPackagePath();
         string lastVersion;

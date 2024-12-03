@@ -2,7 +2,7 @@
 public class FileDotNetVersionInfoManager : IDotNetVersionInfoRepository
 {
     private static readonly string _netPath = bb1.Configuration!.GetNetPath();
-    public async Task SaveVersionInfoAsync(DotNetVersionUpgradeModel model)
+    public async Task SaveVersionInfoAsync(DotNetUpgradeConfigurationModel model)
     {
         // Step 1: Get the old data from the file before saving
         string oldFileContent = await ff1.AllTextAsync(_netPath);
@@ -25,11 +25,10 @@ public class FileDotNetVersionInfoManager : IDotNetVersionInfoRepository
 
         }
     }
-    private static string GetContents(DotNetVersionUpgradeModel config)
+    private static string GetContents(DotNetUpgradeConfigurationModel config)
     {
         var sb = new StringBuilder();
         sb.AppendLine($"NetVersion\t{config.NetVersion}");
-        sb.AppendLine($"LastUpdated\t{config.LastUpdated:MM/dd/yyyy}");  // Format the DateOnly value
         sb.AppendLine($"IsTestMode\t{config.IsTestMode}");
         sb.AppendLine($"TestLocalFeedPath\t{config.TestLocalFeedPath}");
         sb.AppendLine($"TestPublicFeedPath\t{config.TestPublicFeedPath}");
@@ -37,7 +36,7 @@ public class FileDotNetVersionInfoManager : IDotNetVersionInfoRepository
         // Return the constructed text content
         return sb.ToString();
     }
-    private static bool VerifyFileContent(DotNetVersionUpgradeModel expectedModel)
+    private static bool VerifyFileContent(DotNetUpgradeConfigurationModel expectedModel)
     {
         // Retrieve the version from IConfiguration after it has been reloaded
         string versionFoundString = bb1.Configuration!.GetNetVersion();
@@ -53,9 +52,9 @@ public class FileDotNetVersionInfoManager : IDotNetVersionInfoRepository
         return versionFoundInt == expectedModel.NetVersion;
     }
 
-    private static DotNetVersionUpgradeModel ParseFileContent(string content)
+    private static DotNetUpgradeConfigurationModel ParseFileContent(string content)
     {
-        var model = new DotNetVersionUpgradeModel();
+        var model = new DotNetUpgradeConfigurationModel();
         var lines = content.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries);
         foreach (var line in lines)
         {
@@ -68,9 +67,6 @@ public class FileDotNetVersionInfoManager : IDotNetVersionInfoRepository
                 {
                     case "NetVersion":
                         model.NetVersion = int.Parse(value);
-                        break;
-                    case "LastUpdated":
-                        model.LastUpdated = DateOnly.Parse(value);
                         break;
                     case "IsTestMode":
                         model.IsTestMode = bool.Parse(value);
@@ -90,7 +86,7 @@ public class FileDotNetVersionInfoManager : IDotNetVersionInfoRepository
         return model;
     }
 
-    public async Task<DotNetVersionUpgradeModel> GetVersionInfoAsync()
+    public async Task<DotNetUpgradeConfigurationModel> GetVersionInfoAsync()
     {
         // Read the content from the file
         string fileContent = await ff1.AllTextAsync(_netPath);
