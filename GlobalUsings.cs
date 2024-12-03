@@ -20,3 +20,6 @@ global using UpdateManager.DotNetUpgradeLibrary.Extensions;
 global using UpdateManager.DotNetUpgradeLibrary.TestHelpers;
 global using UpdateManager.DotNetUpgradeLibrary.Utilities;
 global using UpdateManager.CoreLibrary.ProjectFileHelpers;
+global using Microsoft.Extensions.DependencyInjection;
+global using UpdateManager.DotNetUpgradeLibrary.Services;
+global using UpdateManager.CoreLibrary.DataAccess;

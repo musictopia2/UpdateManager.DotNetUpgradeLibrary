@@ -1,4 +1,4 @@
-﻿namespace UpdateManager.CoreLibrary.YearlyNetUpgradeHelpers.Services;
+﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class NoPostBuildCommandStrategy : IPostBuildCommandStrategy
 {
     bool IPostBuildCommandStrategy.ShouldRunPostBuildCommand(LibraryNetUpdateModel libraryModel)
