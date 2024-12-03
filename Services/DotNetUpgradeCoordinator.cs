@@ -2,25 +2,26 @@
 public class DotNetUpgradeCoordinator(
     IFeedPathResolver feedPathResolver,
     ITestFileManager testFileManager,
-    IDotNetUpgradeConfigReader dotNetVersionInfoManager,
+    IDotNetUpgradeConfigReader dotNetUpgradeConfig,
+    IDotNetVersionUpdater versionUpdater,
     IPreUpgradeProcessHandler preUpgradeProcessHandler,
     INetVersionUpdateContext netVersionUpdateContext,
     ILibraryDotNetUpgraderBuild libraryDotNetUpgraderBuild,
     IPackageFeedManager packageFeedManager,
     ILibraryDotNetUpgradeCommitter libraryDotNetUpgradeCommitter,
-    IPostBuildCommandStrategy postBuildCommandStrategy, //not sure if i still need this (?)
     IPostUpgradeProcessHandler postUpgradeProcessHandler
     )
 {
     public async Task<UpgradeProcessState> GetUpgradeStatusAsync(BasicList<LibraryNetUpgradeModel> libraries)
     {
         // Get the configuration for the .NET upgrade
-        DotNetUpgradeBasicConfig netConfig = await dotNetVersionInfoManager.GetConfigAsync();
+        DotNetUpgradeBasicConfig netConfig = await dotNetUpgradeConfig.GetConfigAsync();
         // Initialize any possible custom pre-upgrade processes
         await InitializePossibleCustomProcessesAsync(netConfig);
         // Check if the system needs an update
         bool needsUpdate;
-        needsUpdate = netConfig.NeedsToUpdateVersion();
+        int version = int.Parse(bb1.Configuration!.GetNetVersion());
+        needsUpdate = version.NeedsToUpdateVersion();
         if (needsUpdate)
         {
             // If an update is required, return the "PendingUpdate" phase
@@ -88,7 +89,7 @@ public class DotNetUpgradeCoordinator(
         int latestVersion = DotNetVersionChecker.GetHighestInstalledDotNetVersion()
             ?? throw new CustomBasicException("Unable to update to the latest version because no .NET version was found.");
         // Update the configuration with the latest version
-        netConfig.NetVersion = latestVersion;
+        
         if (netConfig.IsTestMode == false)
         {
             // Reset flags for new version (pre and post upgrade)
@@ -96,7 +97,7 @@ public class DotNetUpgradeCoordinator(
             await postUpgradeProcessHandler.ResetFlagsForNewVersionAsync(netConfig); //to let any post processes know you have a new version.
         }
         // Save updated version info
-        await dotNetVersionInfoManager.SaveVersionInfoAsync(netConfig);
+        await versionUpdater.UpdateNetVersionAsync(latestVersion);
         // Reset library context (likely clears or prepares libraries for the new version)
         await netVersionUpdateContext.ResetLibraryAsync();
     }
@@ -117,7 +118,6 @@ public class DotNetUpgradeCoordinator(
             return;
         }
         string backupFilePath = GetBackupFilePath(libraryConfig);
-
         if (isTestMode)
         {
             // For test mode: Always try to restore from backup if it exists, otherwise create a new backup
@@ -153,7 +153,6 @@ public class DotNetUpgradeCoordinator(
             //Console.WriteLine("[PROD] Backup deleted after successful publish.");
         }
     }
-
     public static BasicList<LibraryNetUpgradeModel> GetBuildOrder(BasicList<LibraryNetUpgradeModel> libraries, string rootName)
     {
         var sortedLibraries = new BasicList<LibraryNetUpgradeModel>();
@@ -226,7 +225,7 @@ public class DotNetUpgradeCoordinator(
         }
         if (library.PackageType == EnumFeedType.Public)
         {
-            library.Version = $"{config.NetVersion}.0.1";
+            library.Version = $"{bb1.Configuration!.GetNetVersion()}.0.1";
         }
         BackupIfNeeded(library, config.IsTestMode);
         if (config.IsTestMode == false)
@@ -280,9 +279,7 @@ public class DotNetUpgradeCoordinator(
                     return;
                 }
             }
-            
         }
-        
         if (library.Status == EnumDotNetUpgradeStatus.WaitingForGitHub)
         {
             successful = await libraryDotNetUpgradeCommitter.CommitAndPushToGitHubAsync(library, config);
@@ -293,5 +290,25 @@ public class DotNetUpgradeCoordinator(
             }
             library.Status = EnumDotNetUpgradeStatus.Completed;
         }
+    }
+    public async Task FinalizePostUpgradeProcessesAsync(DotNetUpgradeBasicConfig config)
+    {
+        if (config.IsTestMode)
+        {
+            Console.WriteLine("Upgrade completed successfully in Test Mode. Post-upgrade processes were skipped.");
+            return;
+        }
+        if (postUpgradeProcessHandler.ArePostUpgradeProcessesNeeded(config) == false)
+        {
+            Console.WriteLine("No post-upgrade processes needed. The upgrade is now fully complete.");
+            return;
+        }
+        await postUpgradeProcessHandler.RunPostUpgradeProcessesAsync(config);
+        if (postUpgradeProcessHandler.ArePostUpgradeProcessesNeeded(config) == false)
+        {
+            Console.WriteLine("Post-upgrade processes completed successfully. The upgrade is now fully finished.");
+            return;
+        }
+        Console.WriteLine("Post-upgrade processes did not complete successfully. Please review the logs or troubleshooting steps.");
     }
 }

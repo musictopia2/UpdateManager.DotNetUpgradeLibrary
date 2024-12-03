@@ -9,6 +9,7 @@ public static class ServiceExtensions
             .AddSingleton<LibraryDotNetUpgradeCommitter, LibraryDotNetUpgradeCommitter>()
             .AddSingleton<ILibraryNetUpdateModelGenerator, LibraryNetUpdateModelGenerator>()
             .AddSingleton<IPackageFeedManager, PackageFeedManager>()
+            .AddSingleton<IDotNetVersionUpdater, DotNetVersionUpdater>()
             .AddSingleton<DotNetUpgradeCoordinator>();
         if (alsoBuilder)
         {
@@ -16,7 +17,7 @@ public static class ServiceExtensions
         }
         if (useFileBased)
         {
-            services.AddSingleton<IDotNetUpgradeConfigReader, FileDotNetVersionInfoManager>()
+            services.AddSingleton<IDotNetUpgradeConfigReader, DotNetUpgradeConfigReader>()
                 .AddSingleton<INetVersionUpdateContext, FileNetVersionUpdateContext>()
                 .AddSingleton<IPackagesContext, FilePackagesContext>();
         }

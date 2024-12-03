@@ -13,7 +13,7 @@ public class LibraryDotNetUpgradeCommitter(IPostUpgradeProcessHandler handler) :
         {
             return true; //because someone else is handling this later.
         }
-        rets = await GitHubCommitter.CommitAndPushToGitHubAsync(updateModel.CsProjPath, $"Updated To {versionUpgradeModel.NetVersion}", cancellationToken);
+        rets = await GitHubCommitter.CommitAndPushToGitHubAsync(updateModel.CsProjPath, $"Updated To {bb1.Configuration!.GetNetVersion()}", cancellationToken);
         return rets;
     }
 }
