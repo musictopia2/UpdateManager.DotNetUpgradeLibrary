@@ -4,6 +4,7 @@ public class LibraryNetUpdateModelGenerator(IPackagesContext packageContext) : I
     async Task<BasicList<LibraryNetUpgradeModel>> ILibraryNetUpdateModelGenerator.CreateLibraryNetUpdateModelListAsync()
     {
         BasicList<NuGetPackageModel> packages = await packageContext.GetPackagesAsync();
+        packages.RemoveAllAndObtain(x => x.TemporarilyIgnore || x.Framework == EnumTargetFramework.NetStandard);
         BasicList<LibraryNetUpgradeModel> output = [];
         // Check if we need to filter packages for testing
         bool includeOnlyTests = LibraryInclusionGlobals.LibrariesToIncludeForTest.Count > 0;
@@ -25,7 +26,8 @@ public class LibraryNetUpdateModelGenerator(IPackagesContext packageContext) : I
                 CsProjPath = package.CsProjPath,
                 NugetPackagePath = package.NugetPackagePath,
                 Status = EnumDotNetUpgradeStatus.None,
-                Development = package.Development
+                Development = package.Development,
+                PrefixForPackageName = package.PrefixForPackageName
             };
             upgrade.Version = package.FeedType == EnumFeedType.Local
                 ? package.Version.IncrementMinorVersion()

@@ -67,7 +67,7 @@ public class PackageFeedManager(INugetPacker packer) : IPackageFeedManager
         }
         string nugetFile = files.Single();
         nugetFile = ff1.FullFile(nugetFile);
-        rets = await PrivateNuGetFeedUploader.UploadPrivateNugetPackageAsync(feedPath, upgradeModel.NugetPackagePath, nugetFile, cancellationToken);
+        rets = await LocalNuGetFeedUploader.UploadPrivateNugetPackageAsync(feedPath, upgradeModel.NugetPackagePath, nugetFile, cancellationToken);
         return rets;
     }
 }

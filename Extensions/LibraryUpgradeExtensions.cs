@@ -36,13 +36,13 @@ public static class LibraryUpgradeExtensions
         {
             //has to check something like 9.0.1.  if there on public nuget, then already done period.
             string upgradeVersion = $"{netVersion}.0.1";
-            bool isPublicPackageUpgraded = await CheckPublicFeedAsync(upgradeModel.PackageName, upgradeVersion);
-
+            string packageId = upgradeModel.GetPackageID();
+            bool isPublicPackageUpgraded = await CheckPublicFeedAsync(packageId, upgradeVersion);
             if (isPublicPackageUpgraded)
             {
                 return true; // If public feed is upgraded, return true
             }
-            bool isStagingPackageUpgraded = CheckStagingFeed(upgradeModel, netVersion);
+            bool isStagingPackageUpgraded = await CheckStagingFeedAsync(upgradeModel);
             if (isStagingPackageUpgraded)
             {
                 return true;
@@ -51,7 +51,7 @@ public static class LibraryUpgradeExtensions
             {
                 return false;
             }
-            return CheckDevelopmentFeed(upgradeModel, netVersion);
+            return await CheckDevelopmentFeedAsync(upgradeModel, netVersion);
         }
         // Check the local production feed
         bool isLocalUpgraded = CheckLocalProductionFeed(upgradeModel, netVersion);
@@ -64,7 +64,7 @@ public static class LibraryUpgradeExtensions
             return false;
         }
         // Check the development feed if it's in development
-        return CheckDevelopmentFeed(upgradeModel, netVersion);
+        return await CheckDevelopmentFeedAsync(upgradeModel, netVersion);
     }
     private static async Task<bool> CheckPublicFeedAsync(string packageName, string upgradeVersion)
     {
@@ -90,7 +90,10 @@ public static class LibraryUpgradeExtensions
                 var targetFramework = targetFrameworkElement.Attribute("targetFramework")?.Value;
                 if (targetFramework?.StartsWith("net") == true)
                 {
-                    return targetFramework.Substring(3); // returns "9" from "net9.0"
+                    // Remove the "net" prefix, and then split by "." to get the major version
+                    string version = targetFramework.Substring(3); // "9.0"
+                    string[] versionParts = version.Split('.'); // ["9", "0"]
+                    return versionParts[0]; // Return the first part, "9"
                 }
                 throw new CustomBasicException($"The .nuspec file at {nuspecPath} does not contain a valid target framework version. Please ensure the file is structured correctly.");
             }
@@ -110,25 +113,23 @@ public static class LibraryUpgradeExtensions
         string lastVersion = upgradeModel.Version.DecrementVersion();
         return FinishGettingNetVersion(feedPath, upgradeModel.PackageName, lastVersion, netVersion);
     }
-    private static bool CheckStagingFeed(LibraryNetUpgradeModel upgradeModel, string netVersion)
+    private static async Task<bool> CheckStagingFeedAsync(LibraryNetUpgradeModel upgradeModel)
     {
-        string feedPath = bb1.Configuration!.GetPrivatePackagePath();
-        string lastVersion = upgradeModel.Version.DecrementVersion();
-        return FinishGettingNetVersion(feedPath, upgradeModel.PackageName, lastVersion, netVersion);
+        string feedPath = bb1.Configuration!.GetStagingPackagePath();
+        string packageName = upgradeModel.GetPackageID();
+        return await LocalNuGetFeedManager.PackageExistsAsync(feedPath, packageName);
     }
-    private static bool CheckDevelopmentFeed(LibraryNetUpgradeModel upgradeModel, string netVersion)
+    private static async Task<bool> CheckDevelopmentFeedAsync(LibraryNetUpgradeModel upgradeModel, string netVersion)
     {
         string feedPath = bb1.Configuration!.GetDevelopmentPackagePath();
-        string lastVersion;
         if (upgradeModel.PackageType == EnumFeedType.Local)
         {
+            string lastVersion;
             lastVersion = upgradeModel.Version.DecrementVersion();
+            return FinishGettingNetVersion(feedPath, upgradeModel.PackageName, lastVersion, netVersion);
         }
-        else
-        {
-            lastVersion = upgradeModel.Version;
-        }
-        return FinishGettingNetVersion(feedPath, upgradeModel.PackageName, lastVersion, netVersion);
+        string packageName = upgradeModel.GetPackageID();
+        return await LocalNuGetFeedManager.PackageExistsAsync(feedPath, packageName);
     }
     private static bool FinishGettingNetVersion(string feedPath, string packageName, string lastVersion, string netVersion)
     {
