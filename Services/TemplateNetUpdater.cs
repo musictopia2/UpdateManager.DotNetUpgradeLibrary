@@ -21,7 +21,7 @@ public class TemplateNetUpdater() : ITemplateNetUpdater
         {
             return false;
         }
-        rets = await TemplateActionHandler.RunTemplateActionAsync(version, EnumTemplateAction.Install);
+        rets = await TemplateActionHandler.RunTemplateActionAsync(template.TemplateDirectory, EnumTemplateAction.Install);
         return rets;
     }
 }
