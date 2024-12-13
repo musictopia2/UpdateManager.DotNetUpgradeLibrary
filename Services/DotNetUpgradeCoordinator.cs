@@ -6,6 +6,7 @@ public class DotNetUpgradeCoordinator(
     IDotNetVersionUpdater versionUpdater,
     IPreUpgradeProcessHandler preUpgradeProcessHandler,
     INetVersionUpdateContext netVersionUpdateContext,
+    IBranchValidationService branchService,
     ILibraryDotNetUpgraderBuild libraryDotNetUpgraderBuild,
     IPackageFeedManager packageFeedManager,
     ILibraryDotNetUpgradeCommitter libraryDotNetUpgradeCommitter,
@@ -234,6 +235,18 @@ public class DotNetUpgradeCoordinator(
             DeleteBackup(library); //looks like if production, then after restoring, forced to risk it.  because otherwise, private packages won't build.
         }
         if (library.Status == EnumDotNetUpgradeStatus.None)
+        {
+            if (await branchService.ValidateBranchAsync(library, config))
+            {
+                library.Status = EnumDotNetUpgradeStatus.BranchCheckedOut;
+            }
+            else
+            {
+                Console.WriteLine($"Failed to check out branch for {library.PackageName}");
+                return; //stop here i think.
+            }
+        }
+        if (library.Status == EnumDotNetUpgradeStatus.BranchCheckedOut)
         {
             //this means to build the library.
             //only can do if it has not been done previously.

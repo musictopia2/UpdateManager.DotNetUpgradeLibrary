@@ -6,6 +6,7 @@ public static class ServiceExtensions
         services.AddSingleton<IFeedPathResolver, FeedPathResolver>()
             .AddSingleton<ITestFileManager, TestFileManager>()
             .AddSingleton<ITemplateNetUpdater, TemplateNetUpdater>()
+            .AddSingleton<IBranchValidationService, BranchValidationService>()
             .AddSingleton<LibraryDotNetUpgradeCommitter, LibraryDotNetUpgradeCommitter>()
             .AddSingleton<ILibraryNetUpdateModelGenerator, LibraryNetUpdateModelGenerator>()
             .AddSingleton<IPackageFeedManager, PackageFeedManager>()
