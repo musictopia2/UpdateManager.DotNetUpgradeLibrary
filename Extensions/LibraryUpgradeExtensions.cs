@@ -32,7 +32,6 @@ public static class LibraryUpgradeExtensions
             return false; //since its testing, go ahead and go through the process of upgrading no matter what since its only testing anyways
         }
         string directory = Path.GetDirectoryName(upgradeModel.CsProjPath)!;
-        Console.WriteLine(directory);
         if (DotNetVersionHelper.IsExpectedVersionInReleaseBuild(directory) == false)
         {
             return false;
