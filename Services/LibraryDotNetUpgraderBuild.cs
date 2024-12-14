@@ -28,6 +28,12 @@ public class LibraryDotNetUpgraderBuild(IPostBuildCommandStrategy postBuildStrat
             }
         }
         isSuccess = await ProjectBuilder.BuildProjectAsync(libraryModel.CsProjPath, "/p:SkipPostBuild=true", cancellationToken);
+        string directory = Path.GetDirectoryName(libraryModel.CsProjPath)!;
+        if (DotNetVersionHelper.IsExpectedVersionInReleaseBuild(directory) == false)
+        {
+            Console.WriteLine("Still did not update to the latest .net.");
+            return false; //still failed because its not in .net
+        }
         return isSuccess;
     }
     async Task<bool> ILibraryDotNetUpgraderBuild.AlreadyUpgradedAsync(LibraryNetUpgradeModel upgradeModel, DotNetUpgradeBasicConfig dotNetModel)

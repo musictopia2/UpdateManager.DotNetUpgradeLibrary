@@ -31,6 +31,12 @@ public static class LibraryUpgradeExtensions
         {
             return false; //since its testing, go ahead and go through the process of upgrading no matter what since its only testing anyways
         }
+        string directory = Path.GetDirectoryName(upgradeModel.CsProjPath)!;
+        if (DotNetVersionHelper.IsExpectedVersionInReleaseBuild(directory) == false)
+        {
+            return false;
+        }
+
         string netVersion = bb1.Configuration!.GetNetVersion();
         if (upgradeModel.PackageType == EnumFeedType.Public)
         {
