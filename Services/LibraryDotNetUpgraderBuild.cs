@@ -27,6 +27,7 @@ public class LibraryDotNetUpgraderBuild(IPostBuildCommandStrategy postBuildStrat
                 }
             }
         }
+        editor.SaveChanges(); //forgot to save changes.
         isSuccess = await ProjectBuilder.BuildProjectAsync(libraryModel.CsProjPath, "/p:SkipPostBuild=true", cancellationToken);
         string directory = Path.GetDirectoryName(libraryModel.CsProjPath)!;
         if (DotNetVersionHelper.IsExpectedVersionInReleaseBuild(directory) == false)
