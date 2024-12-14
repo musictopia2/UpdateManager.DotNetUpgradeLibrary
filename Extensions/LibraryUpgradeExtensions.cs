@@ -53,6 +53,10 @@ public static class LibraryUpgradeExtensions
             }
             return await CheckDevelopmentFeedAsync(upgradeModel, netVersion);
         }
+        if (upgradeModel.Version == "1.0.1")
+        {
+            return false; //this means since this would have been incremented, then means you need this upgraded.
+        }
         // Check the local production feed
         bool isLocalUpgraded = CheckLocalProductionFeed(upgradeModel, netVersion);
         if (isLocalUpgraded)
