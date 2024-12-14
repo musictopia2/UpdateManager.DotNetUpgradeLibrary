@@ -14,7 +14,7 @@ public class BranchValidationService(IPostUpgradeProcessHandler handler) : IBran
         {
             throw new InvalidOperationException($"The project path for {updateModel.PackageName} is invalid or null.");
         }
-        switchResult = await GitBranchManager.SwitchBranchAsync("Main", directory, cancellationToken);
+        switchResult = await GitBranchManager.SwitchBranchToDefaultAsync(directory, cancellationToken);
         return switchResult;
     }
 }
