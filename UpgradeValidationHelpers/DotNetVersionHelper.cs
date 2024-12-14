@@ -47,16 +47,26 @@ public class DotNetVersionHelper
 
         // Now, we need to check for the runtimeconfig.json file in the selected directory
         var runtimeConfigFile = Path.Combine(latestNetDirectory.FullName, $"{projectName}.runtimeconfig.json");
+        //CommonBasicLibraries.deps.json
+        var otherFile = Path.Combine(latestNetDirectory.FullName, $"{projectName}.deps.json");
 
         // If runtimeconfig.json doesn't exist, return false
-        if (!File.Exists(runtimeConfigFile))
+        if (File.Exists(runtimeConfigFile) == false && File.Exists(otherFile)== false)
         {
             return false; // No runtimeconfig.json found
+        }
+        string expectedVersion = bb1.Configuration!.GetNetVersion();
+        if (File.Exists(runtimeConfigFile) == false)
+        {
+            HtmlParser parses = new();
+            parses.Body = ff1.AllText(otherFile);
+            string searches = $".NETCoreApp,Version=v{expectedVersion}";
+            return parses.DoesExist(searches);
         }
 
         // Read the runtimeconfig.json file to get the .NET version
         var runtimeConfig = ReadRuntimeConfig(runtimeConfigFile);
-        string expectedVersion = bb1.Configuration!.GetNetVersion();
+       
         // If runtimeconfig.json could not be read or the version is incorrect, return false
         if (runtimeConfig == null || !runtimeConfig.IsVersionCorrect(expectedVersion))
         {
