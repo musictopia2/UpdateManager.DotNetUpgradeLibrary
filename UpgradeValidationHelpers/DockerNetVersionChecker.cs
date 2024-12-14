@@ -1,12 +1,14 @@
-﻿namespace UpdateManager.DotNetUpgradeLibrary.Utilities;
+﻿namespace UpdateManager.DotNetUpgradeLibrary.UpgradeValidationHelpers;
 public class DockerNetVersionChecker
 {
-    public static async Task<string> GetDockerVersionAsync(string containerName)
+    public static async Task<bool> IsDockerUpgradedAsync(string containerName)
     {
         // Assuming ProcessRunner is a helper that runs commands inside Docker containers
-        var result = await RunAsync($"exec {containerName} printenv DOTNET_VERSION");
+        var result = await RunAsync($"exec {containerName.ToLower()} printenv DOTNET_VERSION");
         string nexts = result.Trim();
-        return ParseVersion(nexts);
+        string versionitHas = ParseVersion(nexts);
+        string versionExpected = bb1.Configuration!.GetNetPath();
+        return versionitHas == versionExpected;
     }
     private static string ParseVersion(string version)
     {

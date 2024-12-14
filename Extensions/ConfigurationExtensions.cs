@@ -1,4 +1,6 @@
-﻿namespace UpdateManager.DotNetUpgradeLibrary.Extensions;
+﻿using UpdateManager.DotNetUpgradeLibrary.Utilities;
+
+namespace UpdateManager.DotNetUpgradeLibrary.Extensions;
 public static class ConfigurationExtensions
 {
     public static string GetLibraryPath(this IConfiguration configuration)

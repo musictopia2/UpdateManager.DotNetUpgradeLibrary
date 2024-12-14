@@ -1,4 +1,6 @@
-﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
+﻿using UpdateManager.DotNetUpgradeLibrary.Utilities;
+
+namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class DotNetUpgradeCoordinator(
     IFeedPathResolver feedPathResolver,
     ITestFileManager testFileManager,

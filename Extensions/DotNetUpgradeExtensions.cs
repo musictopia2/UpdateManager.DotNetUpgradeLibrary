@@ -1,4 +1,6 @@
-﻿namespace UpdateManager.DotNetUpgradeLibrary.Extensions;
+﻿using UpdateManager.DotNetUpgradeLibrary.Utilities;
+
+namespace UpdateManager.DotNetUpgradeLibrary.Extensions;
 internal static class DotNetUpgradeExtensions
 {
     public static bool NeedsToUpdateVersion(this int version)
