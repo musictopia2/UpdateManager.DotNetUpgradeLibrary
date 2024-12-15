@@ -16,6 +16,9 @@ public interface IUpgradePhaseHandler
 
     // Executes the pre-upgrade processes (like updating the program to .NET 10 without modifying dependencies)
     Task<bool> RunPreUpgradeProcessesAsync();
-    Task<bool> HandleCommitAsync(LibraryNetUpgradeModel netUpdateModel);
+    Task<bool> HandleCommitAsync(LibraryNetUpgradeModel netUpdateModel)
+    {
+        return Task.FromResult(false); //most of the time, this won't handle it.
+    }
     string Name => "None";
 }
