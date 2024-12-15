@@ -24,3 +24,4 @@ global using Microsoft.Extensions.DependencyInjection;
 global using UpdateManager.DotNetUpgradeLibrary.Services;
 global using UpdateManager.CoreLibrary.DataAccess;
 global using CommonBasicLibraries.AdvancedGeneralFunctionsAndProcesses.HtmlParserClasses;
+global using UpdateManager.DotNetUpgradeLibrary.Utilities;
