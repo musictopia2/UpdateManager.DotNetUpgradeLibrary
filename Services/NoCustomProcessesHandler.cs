@@ -1,11 +1,6 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class NoCustomProcessesHandler : IPostUpgradeProcessHandler, IPreUpgradeProcessHandler
 {
-    Task IPostUpgradeProcessHandler.ResetFlagsForNewVersionAsync(DotNetUpgradeBasicConfig dotNetVersion)
-    {
-        dotNetVersion.CheckForTesting();
-        return Task.CompletedTask;
-    }
     bool IPostUpgradeProcessHandler.ArePostUpgradeProcessesNeeded(DotNetUpgradeBasicConfig dotNetVersion)
     {
         dotNetVersion.CheckForTesting();
