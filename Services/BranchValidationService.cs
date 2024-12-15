@@ -1,5 +1,5 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
-public class BranchValidationService(IUpgradeProcessHandler handler) : IBranchValidationService
+public class BranchValidationService(IUpgradePhaseHandler handler) : IBranchValidationService
 {
     async Task<bool> IBranchValidationService.ValidateBranchAsync(LibraryNetUpgradeModel updateModel, CancellationToken cancellationToken)
     {

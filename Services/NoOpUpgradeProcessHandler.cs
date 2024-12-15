@@ -1,7 +1,6 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
-public class NoOpUpgradeProcessHandler : IUpgradeProcessHandler
+public class NoOpUpgradeProcessHandler : IUpgradePhaseHandler
 {
-    string IUpgradeProcessHandler.Name => "None";
 
     public bool ArePostUpgradeProcessesNeeded() => false;
     public bool ArePreUpgradeProcessesNeeded() => false;

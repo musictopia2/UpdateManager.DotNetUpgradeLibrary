@@ -1,5 +1,5 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
-public class LibraryDotNetUpgradeCommitter(IUpgradeProcessHandler handler) : ILibraryDotNetUpgradeCommitter
+public class LibraryDotNetUpgradeCommitter(IUpgradePhaseHandler handler) : ILibraryDotNetUpgradeCommitter
 {
     async Task<bool> ILibraryDotNetUpgradeCommitter.CommitAndPushToGitHubAsync(LibraryNetUpgradeModel updateModel, CancellationToken cancellationToken)
     {

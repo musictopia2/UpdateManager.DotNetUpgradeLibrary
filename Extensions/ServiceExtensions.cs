@@ -11,6 +11,7 @@ public static class ServiceExtensions
             .AddSingleton<ILibraryNetUpdateModelGenerator, LibraryNetUpdateModelGenerator>()
             .AddSingleton<IPackageFeedManager, PackageFeedManager>()
             .AddSingleton<IDotNetVersionUpdater, DotNetVersionUpdater>()
+            .AddSingleton<IUpgradePhaseHandler, UpgradePhaseManager>()
             .AddSingleton<DotNetUpgradeCoordinator>();
         if (alsoBuilder)
         {
@@ -29,9 +30,9 @@ public static class ServiceExtensions
         additionalServices?.Invoke(services);
         return services;
     }
-    public static IServiceCollection RegisterDefaultUpgradeHandlers(this IServiceCollection services)
+    public static IServiceCollection RegisterDefaultUpgradeFactory(this IServiceCollection services)
     {
-        services.AddSingleton<IUpgradeProcessHandler, NoOpUpgradeProcessHandler>();
+        services.AddSingleton<IUpgradePhaseFactory, EmptyUpgradePhaseFactory>();
         return services;
     }
     public static IServiceCollection RegisterNoPostUpgradeCommands(this IServiceCollection services)

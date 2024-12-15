@@ -9,7 +9,7 @@ public class DotNetUpgradeCoordinator(
     ILibraryDotNetUpgraderBuild libraryDotNetUpgraderBuild,
     IPackageFeedManager packageFeedManager,
     ILibraryDotNetUpgradeCommitter libraryDotNetUpgradeCommitter,
-    IUpgradeProcessHandler upgradeProcessHandler
+    IUpgradePhaseHandler upgradeProcessHandler
     )
 {
     public async Task<UpgradeProcessState> GetUpgradeStatusAsync(BasicList<LibraryNetUpgradeModel> libraries)

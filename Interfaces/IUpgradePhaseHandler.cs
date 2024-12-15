@@ -1,5 +1,5 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Interfaces;
-public interface IUpgradeProcessHandler
+public interface IUpgradePhaseHandler
 {
     // Asynchronous method to initialize any necessary data or resources
     Task InitAsync();
@@ -17,5 +17,5 @@ public interface IUpgradeProcessHandler
     // Executes the pre-upgrade processes (like updating the program to .NET 10 without modifying dependencies)
     Task<bool> RunPreUpgradeProcessesAsync();
     Task<bool> HandleCommitAsync(LibraryNetUpgradeModel netUpdateModel);
-    string Name { get; }
+    string Name => "None";
 }
