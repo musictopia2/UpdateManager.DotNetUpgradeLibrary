@@ -1,6 +1,8 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class NoOpUpgradeProcessHandler : IUpgradeProcessHandler
 {
+    string IUpgradeProcessHandler.Name => "None";
+
     public bool ArePostUpgradeProcessesNeeded() => false;
     public bool ArePreUpgradeProcessesNeeded() => false;
     public Task<bool> HandleCommitAsync(LibraryNetUpgradeModel netUpdateModel) => Task.FromResult(false);
