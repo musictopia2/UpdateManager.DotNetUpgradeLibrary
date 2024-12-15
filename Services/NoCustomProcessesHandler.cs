@@ -44,4 +44,10 @@ public class NoCustomProcessesHandler : IPostUpgradeProcessHandler, IPreUpgradeP
         dotNetVersion.CheckForTesting();
         return Task.CompletedTask;  // No flags to reset for the new version
     }
+
+    Task IPostUpgradeProcessHandler.ResetFlagsForNewVersionAsync(DotNetUpgradeBasicConfig dotNetVersion)
+    {
+        dotNetVersion.CheckForTesting();
+        return Task.CompletedTask;  // No flags to reset for the new version
+    }
 }
