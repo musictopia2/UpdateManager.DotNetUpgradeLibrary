@@ -1,9 +1,9 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
-public class BranchValidationService(IPostUpgradeProcessHandler handler) : IBranchValidationService
+public class BranchValidationService(IUpgradeProcessHandler handler) : IBranchValidationService
 {
-    async Task<bool> IBranchValidationService.ValidateBranchAsync(LibraryNetUpgradeModel updateModel, DotNetUpgradeBasicConfig versionUpgradeModel, CancellationToken cancellationToken)
+    async Task<bool> IBranchValidationService.ValidateBranchAsync(LibraryNetUpgradeModel updateModel, CancellationToken cancellationToken)
     {
-        if (await handler.HandleCommitAsync(updateModel, versionUpgradeModel))
+        if (await handler.HandleCommitAsync(updateModel))
         {
             return true; //something else should have handled this earlier
         }

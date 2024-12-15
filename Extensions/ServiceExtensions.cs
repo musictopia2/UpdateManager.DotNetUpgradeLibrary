@@ -31,8 +31,7 @@ public static class ServiceExtensions
     }
     public static IServiceCollection RegisterDefaultUpgradeHandlers(this IServiceCollection services)
     {
-        services.AddSingleton<IPostUpgradeProcessHandler, NoCustomProcessesHandler>()
-            .AddSingleton<IPreUpgradeProcessHandler, NoCustomProcessesHandler>();
+        services.AddSingleton<IUpgradeProcessHandler, NoOpUpgradeProcessHandler>();
         return services;
     }
     public static IServiceCollection RegisterNoPostUpgradeCommands(this IServiceCollection services)

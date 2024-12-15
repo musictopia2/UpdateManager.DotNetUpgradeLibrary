@@ -1,17 +1,15 @@
-﻿
-namespace UpdateManager.DotNetUpgradeLibrary.Services;
+﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class DotNetUpgradeCoordinator(
     IFeedPathResolver feedPathResolver,
     ITestFileManager testFileManager,
     IDotNetUpgradeConfigReader dotNetUpgradeConfig,
     IDotNetVersionUpdater versionUpdater,
-    IPreUpgradeProcessHandler preUpgradeProcessHandler,
     INetVersionUpdateContext netVersionUpdateContext,
     IBranchValidationService branchService,
     ILibraryDotNetUpgraderBuild libraryDotNetUpgraderBuild,
     IPackageFeedManager packageFeedManager,
     ILibraryDotNetUpgradeCommitter libraryDotNetUpgradeCommitter,
-    IPostUpgradeProcessHandler postUpgradeProcessHandler
+    IUpgradeProcessHandler upgradeProcessHandler
     )
 {
     public async Task<UpgradeProcessState> GetUpgradeStatusAsync(BasicList<LibraryNetUpgradeModel> libraries)
@@ -32,7 +30,7 @@ public class DotNetUpgradeCoordinator(
         // If it's not in test mode, check if pre-upgrade processes are required
         if (netConfig.IsTestMode == false)
         {
-            if (preUpgradeProcessHandler.ArePreUpgradeProcessesNeeded(netConfig))
+            if (upgradeProcessHandler.ArePreUpgradeProcessesNeeded())
             {
                 // Pre-upgrade processes are required and will run in non-test mode
                 return new(EnumUpgradePhase.PreUpgradePending, netConfig);
@@ -66,8 +64,7 @@ public class DotNetUpgradeCoordinator(
         {
             return; // because can't do in test mode.
         }
-        await preUpgradeProcessHandler.InitAsync(config);
-        await postUpgradeProcessHandler.InitAsync(config);
+        await upgradeProcessHandler.InitAsync();
     }
     public void ClearFeedsOnce(DotNetUpgradeBasicConfig netConfig)
     {
@@ -95,8 +92,7 @@ public class DotNetUpgradeCoordinator(
         if (netConfig.IsTestMode == false)
         {
             // Reset flags for new version (pre and post upgrade)
-            await preUpgradeProcessHandler.ResetFlagsForNewVersionAsync(netConfig);
-            await postUpgradeProcessHandler.ResetFlagsForNewVersionAsync(netConfig); //to let any post processes know you have a new version.
+            await upgradeProcessHandler.ResetFlagsForNewVersionAsync();
         }
         // Save updated version info
         await versionUpdater.UpdateNetVersionAsync(latestVersion);
@@ -216,7 +212,7 @@ public class DotNetUpgradeCoordinator(
                 "For example, upgrading the post command to the latest .NET version without modifying other dependencies is not supported in test mode. " +
                 "Please ensure that 'GetUpgradeStatusAsync' returned the correct status and that this method was not called in error.");
         }
-        bool rets = await preUpgradeProcessHandler.RunPreUpgradeProcessesAsync(config);
+        bool rets = await upgradeProcessHandler.RunPreUpgradeProcessesAsync();
         return rets;
     }
     public async Task ProcessLibraryUpdateAsync(LibraryNetUpgradeModel library, DotNetUpgradeBasicConfig config, BasicList<LibraryNetUpgradeModel> libraries)
@@ -237,7 +233,7 @@ public class DotNetUpgradeCoordinator(
         }
         if (library.Status == EnumDotNetUpgradeStatus.None)
         {
-            if (await branchService.ValidateBranchAsync(library, config))
+            if (await branchService.ValidateBranchAsync(library))
             {
                 library.Status = EnumDotNetUpgradeStatus.BranchCheckedOut;
             }
@@ -296,7 +292,7 @@ public class DotNetUpgradeCoordinator(
         }
         if (library.Status == EnumDotNetUpgradeStatus.WaitingForGitHub)
         {
-            successful = await libraryDotNetUpgradeCommitter.CommitAndPushToGitHubAsync(library, config);
+            successful = await libraryDotNetUpgradeCommitter.CommitAndPushToGitHubAsync(library);
             if (successful == false)
             {
                 Console.WriteLine($"Failed to commit to GitHub for {library.PackageName}");
@@ -312,13 +308,13 @@ public class DotNetUpgradeCoordinator(
             Console.WriteLine("Upgrade completed successfully in Test Mode. Post-upgrade processes were skipped.");
             return;
         }
-        if (postUpgradeProcessHandler.ArePostUpgradeProcessesNeeded(config) == false)
+        if (upgradeProcessHandler.ArePostUpgradeProcessesNeeded() == false)
         {
             Console.WriteLine("No post-upgrade processes needed. The upgrade is now fully complete.");
             return;
         }
-        await postUpgradeProcessHandler.RunPostUpgradeProcessesAsync(config);
-        if (postUpgradeProcessHandler.ArePostUpgradeProcessesNeeded(config) == false)
+        await upgradeProcessHandler.RunPostUpgradeProcessesAsync();
+        if (upgradeProcessHandler.ArePostUpgradeProcessesNeeded() == false)
         {
             Console.WriteLine("Post-upgrade processes completed successfully. The upgrade is now fully finished.");
             return;
