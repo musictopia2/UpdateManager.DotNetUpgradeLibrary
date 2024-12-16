@@ -1,6 +1,6 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Interfaces;
 public interface IProcessItem
 {
-    string Identifier { get; }
+    string HiddenPath { get; } //only via interface
     public EnumUpgradeStatus UpgradeStatus { get; set; }
 }
