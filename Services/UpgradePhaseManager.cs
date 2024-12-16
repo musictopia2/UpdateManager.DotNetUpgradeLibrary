@@ -15,10 +15,10 @@ public class UpgradePhaseManager : IUpgradePhaseHandler
         return _managers.Any(manager => manager.ArePostUpgradeProcessesNeeded());
     }
 
-    bool IUpgradePhaseHandler.ArePreUpgradeProcessesNeeded()
+    bool IUpgradePhaseHandler.Are1PreUpgradeProcessesNeeded()
     {
         // Return true if any manager indicates pre-upgrade processes are needed
-        return _managers.Any(manager => manager.ArePreUpgradeProcessesNeeded());
+        return _managers.Any(manager => manager.Are1PreUpgradeProcessesNeeded());
     }
 
     // Commit handler: Returns true as soon as any manager handles the commit
@@ -68,11 +68,11 @@ public class UpgradePhaseManager : IUpgradePhaseHandler
     }
 
     // Run pre-upgrade processes across all managers
-    async Task<bool> IUpgradePhaseHandler.RunPreUpgradeProcessesAsync()
+    async Task<bool> IUpgradePhaseHandler.Run1PreUpgradeProcessesAsync()
     {
         foreach (var manager in _managers)
         {
-            if (await manager.RunPreUpgradeProcessesAsync() == false)
+            if (await manager.Run1PreUpgradeProcessesAsync() == false)
             {
                 Console.WriteLine($"Pre upgrade failed for {manager.GetType().Name}");
                 return false;

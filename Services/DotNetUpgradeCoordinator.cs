@@ -30,7 +30,7 @@ public class DotNetUpgradeCoordinator(
         // If it's not in test mode, check if pre-upgrade processes are required
         if (netConfig.IsTestMode == false)
         {
-            if (upgradeProcessHandler.ArePreUpgradeProcessesNeeded())
+            if (upgradeProcessHandler.Are1PreUpgradeProcessesNeeded())
             {
                 // Pre-upgrade processes are required and will run in non-test mode
                 return new(EnumUpgradePhase.PreUpgradePending, netConfig);
@@ -212,7 +212,7 @@ public class DotNetUpgradeCoordinator(
                 "For example, upgrading the post command to the latest .NET version without modifying other dependencies is not supported in test mode. " +
                 "Please ensure that 'GetUpgradeStatusAsync' returned the correct status and that this method was not called in error.");
         }
-        bool rets = await upgradeProcessHandler.RunPreUpgradeProcessesAsync();
+        bool rets = await upgradeProcessHandler.Run1PreUpgradeProcessesAsync();
         return rets;
     }
     public async Task ProcessLibraryUpdateAsync(LibraryNetUpgradeModel library, DotNetUpgradeBasicConfig config, BasicList<LibraryNetUpgradeModel> libraries)
