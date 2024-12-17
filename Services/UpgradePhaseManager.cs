@@ -58,10 +58,13 @@ public class UpgradePhaseManager : IUpgradePhaseHandler
     {
         foreach (var manager in _managers)
         {
-            if (await manager.RunPostUpgradeProcessesAsync() == false)
+            if (manager.Are1PreUpgradeProcessesNeeded())
             {
-                Console.WriteLine($"Post upgrade failed for {manager.GetType().Name}");
-                return false;
+                if (await manager.RunPostUpgradeProcessesAsync() == false)
+                {
+                    Console.WriteLine($"Post upgrade failed for {manager.GetType().Name}");
+                    return false;
+                }
             }
         }
         return true;
@@ -72,10 +75,13 @@ public class UpgradePhaseManager : IUpgradePhaseHandler
     {
         foreach (var manager in _managers)
         {
-            if (await manager.Run1PreUpgradeProcessesAsync() == false)
+            if (manager.Are1PreUpgradeProcessesNeeded())
             {
-                Console.WriteLine($"Pre upgrade failed for {manager.GetType().Name}");
-                return false;
+                if (await manager.Run1PreUpgradeProcessesAsync() == false)
+                {
+                    Console.WriteLine($"Pre upgrade failed for {manager.GetType().Name}");
+                    return false;
+                }
             }
         }
         return true;
