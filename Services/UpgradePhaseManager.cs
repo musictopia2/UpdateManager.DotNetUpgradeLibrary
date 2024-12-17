@@ -58,7 +58,7 @@ public class UpgradePhaseManager : IUpgradePhaseHandler
     {
         foreach (var manager in _managers)
         {
-            if (manager.Are1PreUpgradeProcessesNeeded())
+            if (manager.ArePostUpgradeProcessesNeeded())
             {
                 if (await manager.RunPostUpgradeProcessesAsync() == false)
                 {
