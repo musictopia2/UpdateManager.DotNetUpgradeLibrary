@@ -10,7 +10,6 @@ public class TemplateVersionVerifier
         try
         {
             // Step 1: Create the project using the template
-            Console.WriteLine("Creating a temporary project using the template...");
             var createProcess = new ProcessStartInfo
             {
                 FileName = "dotnet",
@@ -67,7 +66,6 @@ public class TemplateVersionVerifier
             if (Directory.Exists(tempProjectDirectory))
             {
                 Directory.Delete(tempProjectDirectory, true);
-                Console.WriteLine("Temporary project deleted.");
             }
         }
     }
