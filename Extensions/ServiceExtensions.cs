@@ -40,11 +40,15 @@ public static class ServiceExtensions
         services.AddSingleton<IPostBuildCommandStrategy, NoPostBuildCommandStrategy>();
         return services;
     }
-    public static IServiceCollection RegisterPostUpgradeOnlyServices<T>(this IServiceCollection services, Action<IServiceCollection> actions)
+    public static IServiceCollection RegisterPostUpgradeOnlyServices<T>(this IServiceCollection services, Action<IServiceCollection> actions, bool useFileBased = true)
         where T: class, IUpgradePhaseFactory
     {
         services.AddSingleton<PostUpgradeCoordinator>()
             .AddSingleton<IUpgradePhaseFactory, T>();
+        if (useFileBased)
+        {
+            services.AddSingleton<IPackagesContext, FilePackagesContext>();
+        }
         actions.Invoke(services);
         return services;
     }
