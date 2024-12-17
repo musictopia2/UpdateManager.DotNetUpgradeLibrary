@@ -7,7 +7,7 @@ public class DockerNetVersionChecker
         var result = await RunAsync($"exec {containerName.ToLower()} printenv DOTNET_VERSION");
         string nexts = result.Trim();
         string versionitHas = ParseVersion(nexts);
-        string versionExpected = bb1.Configuration!.GetNetPath();
+        string versionExpected = bb1.Configuration!.GetNetVersion(); //needs to be on the latest version.
         return versionitHas == versionExpected;
     }
     private static string ParseVersion(string version)
