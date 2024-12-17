@@ -39,7 +39,7 @@ public interface IUpgradePhaseHandler
         return Task.FromResult(false); // By default, this method does not handle commits.
     }
 
-    // The default name for the handler.
-    // This is provided as a read-only property, and could be customized in derived implementations if needed.
+    // Default implementation of Name property
+    // This sets the default name as "None" unless overridden
     string Name => "None";
 }

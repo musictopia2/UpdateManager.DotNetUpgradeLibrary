@@ -40,4 +40,12 @@ public static class ServiceExtensions
         services.AddSingleton<IPostBuildCommandStrategy, NoPostBuildCommandStrategy>();
         return services;
     }
+    public static IServiceCollection RegisterPostUpgradeOnlyServices<T>(this IServiceCollection services, Action<IServiceCollection> actions)
+        where T: class, IUpgradePhaseFactory
+    {
+        services.AddSingleton<PostUpgradeCoordinator>()
+            .AddSingleton<IUpgradePhaseFactory, T>();
+        actions.Invoke(services);
+        return services;
+    }
 }
