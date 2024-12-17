@@ -1,14 +1,7 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
-public class UpgradePhaseManager : IUpgradePhaseHandler
+public class UpgradePhaseManager(IUpgradePhaseFactory factory) : IUpgradePhaseHandler
 {
-    private BasicList<IUpgradePhaseHandler> _managers;
-
-    // Constructor now correctly uses the factory property to create the list of handlers
-    public UpgradePhaseManager(IUpgradePhaseFactory factory)
-    {
-        _managers = factory.CreateUpgradePhases;  // Use the property (not method)
-    }
-
+    private readonly BasicList<IUpgradePhaseHandler> _managers = factory.CreateUpgradePhases;
     bool IUpgradePhaseHandler.ArePostUpgradeProcessesNeeded()
     {
         // Return true if any manager indicates post-upgrade processes are needed

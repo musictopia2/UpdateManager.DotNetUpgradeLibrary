@@ -34,9 +34,7 @@ public class DockerNetVersionChecker
 
         try
         {
-            using var process = Process.Start(startInfo);
-            if (process == null)
-                throw new InvalidOperationException("Failed to start process.");
+            using var process = Process.Start(startInfo) ?? throw new InvalidOperationException("Failed to start process.");
 
             // Capture standard output and errors
             string output = await process.StandardOutput.ReadToEndAsync();
