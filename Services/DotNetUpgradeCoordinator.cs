@@ -25,30 +25,33 @@ public class DotNetUpgradeCoordinator(
         if (needsUpdate)
         {
             // If an update is required, return the "PendingUpdate" phase
-            return new(EnumUpgradePhase.PendingUpdate, netConfig);
+            return new(EnumUpgradePhase.PendingUpdate, netConfig, false);
         }
+        bool rets;
+        rets = libraries.All(x => x.Status == EnumDotNetUpgradeStatus.Completed);
+
         // If it's not in test mode, check if pre-upgrade processes are required
         if (netConfig.IsTestMode == false)
         {
             if (upgradeProcessHandler.Are1PreUpgradeProcessesNeeded())
             {
                 // Pre-upgrade processes are required and will run in non-test mode
-                return new(EnumUpgradePhase.PreUpgradePending, netConfig);
+                return new(EnumUpgradePhase.PreUpgradePending, netConfig, rets);
             }
         }
         // If all libraries have completed the upgrade, return "UpgradeCompleted"
-        if (libraries.All(x => x.Status == EnumDotNetUpgradeStatus.Completed))
+        if (rets)
         {
-            return new(EnumUpgradePhase.UpgradeCompleted, netConfig);
+            return new(EnumUpgradePhase.UpgradeCompleted, netConfig, true);
         }
         // If all libraries are still in "None" status (not yet started), it means pre-upgrade processes are done
         if (libraries.All(x => x.Status == EnumDotNetUpgradeStatus.None))
         {
-            return new(EnumUpgradePhase.PreUpgradeCompleted, netConfig);
+            return new(EnumUpgradePhase.PreUpgradeCompleted, netConfig, false);
         }
         // If any library has a status other than "Completed", it means that the upgrade process is still in progress
         // for at least some libraries. Some libraries may be fully upgraded (status "Completed"), while others are still in progress.
-        return new(EnumUpgradePhase.UpgradeInProgress, netConfig);
+        return new(EnumUpgradePhase.UpgradeInProgress, netConfig, false);
     }
     public async Task SaveLibrariesAsync(BasicList<LibraryNetUpgradeModel> libraries)
     {
