@@ -2,5 +2,5 @@
 public interface IProcessItem
 {
     string HiddenPath { get; } //only via interface
-    public EnumUpgradeStatus UpgradeStatus { get; set; }
+    EnumUpgradeStatus UpgradeStatus { get; set; }
 }
