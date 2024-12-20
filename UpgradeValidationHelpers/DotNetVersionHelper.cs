@@ -1,7 +1,6 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.UpgradeValidationHelpers;
 public class DotNetVersionHelper
 {
-    // Method to verify if the expected .NET version exists in the Release build output
     public static bool IsExpectedVersionInReleaseBuild(string projectDirectory)
     {
         // Ensure the project directory exists
@@ -9,9 +8,8 @@ public class DotNetVersionHelper
         {
             throw new DirectoryNotFoundException($"Project directory not found: {projectDirectory}");
         }
-
-        // Get the project name from the directory (last part of the path)
-        string projectName = new DirectoryInfo(projectDirectory).Name;
+        // Get the project name based on the .csproj file (not the directory name)
+        string projectName = GetProjectNameFromDirectory(projectDirectory);
 
         // Define the path to the 'bin\Release' directory under the project
         string releaseBinDirectory = Path.Combine(projectDirectory, "bin", "Release");
@@ -45,36 +43,60 @@ public class DotNetVersionHelper
             return false;  // No valid .NET folder found
         }
 
-        // Now, we need to check for the runtimeconfig.json file in the selected directory
-        var runtimeConfigFile = Path.Combine(latestNetDirectory.FullName, $"{projectName}.runtimeconfig.json");
-        //CommonBasicLibraries.deps.json
-        var otherFile = Path.Combine(latestNetDirectory.FullName, $"{projectName}.deps.json");
+        // Determine whether it's WebAssembly or Server-side
+        bool isWebAssembly = projectDirectory.Contains("WebAssembly", StringComparison.OrdinalIgnoreCase);
+        bool isServerSide = projectDirectory.Contains("Server", StringComparison.OrdinalIgnoreCase);
 
-        // If runtimeconfig.json doesn't exist, return false
-        if (File.Exists(runtimeConfigFile) == false && File.Exists(otherFile)== false)
+        // If it's purely WebAssembly and we're checking a WebAssembly client
+        if (isWebAssembly && !isServerSide)
         {
-            return false; // No runtimeconfig.json found
+            throw new InvalidOperationException("WebAssembly apps are not supported in this context.");
         }
+
+        // Determine the correct file to check based on whether this is a WebAssembly or Server-side app
+        string depsFile = GetDepsFileBasedOnProjectType(latestNetDirectory.FullName, projectName);
+
+        // If neither file exists, return false
+        if (string.IsNullOrWhiteSpace(depsFile) || !File.Exists(depsFile))
+        {
+            return false; // Neither deps.json file found
+        }
+
+        // Now, we need to validate the version in .deps.json
         string expectedVersion = bb1.Configuration!.GetNetVersion();
-        if (File.Exists(runtimeConfigFile) == false)
+        HtmlParser parses = new();
+
+        if (File.Exists(depsFile))
         {
-            HtmlParser parses = new();
-            parses.Body = ff1.AllText(otherFile);
+            parses.Body = ff1.AllText(depsFile);
             string searches = $".NETCoreApp,Version=v{expectedVersion}";
-            return parses.DoesExist(searches);
+            if (parses.DoesExist(searches))
+            {
+                return true;
+            }
         }
 
-        // Read the runtimeconfig.json file to get the .NET version
-        var runtimeConfig = ReadRuntimeConfig(runtimeConfigFile);
-       
-        // If runtimeconfig.json could not be read or the version is incorrect, return false
-        if (runtimeConfig == null || !runtimeConfig.IsVersionCorrect(expectedVersion))
+        return false;
+    }
+
+    // Helper function to determine the project name from the directory (get it from the .csproj file)
+    private static string GetProjectNameFromDirectory(string projectDirectory)
+    {
+        var csprojFiles = Directory.GetFiles(projectDirectory, "*.csproj");
+        if (csprojFiles.Length == 0)
         {
-            return false;  // Version mismatch or file read failure
+            throw new FileNotFoundException($"No .csproj file found in the directory: {projectDirectory}");
         }
 
-        // If everything matches, return true
-        return true;
+        // Extract the project name from the csproj file name (without extension)
+        string csprojFileName = Path.GetFileNameWithoutExtension(csprojFiles[0]);
+        return csprojFileName;  // This should return the correct project name
+    }
+
+    // Helper function to determine the appropriate .deps.json file based on the project type
+    private static string GetDepsFileBasedOnProjectType(string netDirectory, string projectName)
+    {
+        return Path.Combine(netDirectory, $"{projectName}.deps.json");
     }
 
     // Helper method to parse and compare the major .NET version from the directory name (e.g., 'net6.0' -> '6')
@@ -94,21 +116,5 @@ public class DotNetVersionHelper
         }
         // Default to 0 if parsing fails
         return 0;
-    }
-
-    // Method to read and parse the runtimeconfig.json file
-    private static RuntimeConfig? ReadRuntimeConfig(string filePath)
-    {
-        try
-        {
-            string jsonString = File.ReadAllText(filePath);
-            var runtimeConfig = SystemTextJsonStrings.DeserializeObject<RuntimeConfig>(jsonString);
-            return runtimeConfig;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error reading {filePath}: {ex.Message}");
-            return null;  // If reading fails, return null
-        }
     }
 }
