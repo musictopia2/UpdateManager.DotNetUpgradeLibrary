@@ -6,7 +6,6 @@ public class PostUpgradeCoordinator(IUpgradePhaseFactory factory)
         var list = factory.CreateUpgradePhases;
         foreach (var item in list)
         {
-            Console.WriteLine($"Initializing {item.Name}");
             await item.InitAsync();
         }
         if (list.All(x => x.ArePostUpgradeProcessesNeeded() == false))
