@@ -55,28 +55,48 @@ public class DotNetVersionHelper
 
         // Determine the correct file to check based on whether this is a WebAssembly or Server-side app
         string depsFile = GetDepsFileBasedOnProjectType(latestNetDirectory.FullName, projectName);
+        string runtimeConfigFile = GetRuntimeConfigFileBasedOnProjectType(latestNetDirectory.FullName, projectName);
 
         // If neither file exists, return false
-        if (string.IsNullOrWhiteSpace(depsFile) || !File.Exists(depsFile))
+        if (string.IsNullOrWhiteSpace(depsFile) && string.IsNullOrWhiteSpace(runtimeConfigFile))
         {
-            return false; // Neither deps.json file found
+            return false; // Neither .deps.json nor runtimeconfig.json found
         }
 
         // Now, we need to validate the version in .deps.json
         string expectedVersion = bb1.Configuration!.GetNetVersion();
         HtmlParser parses = new();
-
+        string searches;
         if (File.Exists(depsFile))
         {
             parses.Body = ff1.AllText(depsFile);
-            string searches = $".NETCoreApp,Version=v{expectedVersion}";
+            searches = $".NETCoreApp,Version=v{expectedVersion}";
             if (parses.DoesExist(searches))
             {
                 return true;
             }
+            return false;
+        }
+        if (File.Exists(runtimeConfigFile) == false)
+        {
+            return true; //may have no way to detect.  just return true.  if wrong, too bad.
         }
 
+
+        parses.Body = ff1.AllText(runtimeConfigFile);
+        searches = $"net{expectedVersion}.0";
+
+        //searches = $".NETCoreApp,Version=v{expectedVersion}";
+        if (parses.DoesExist(searches))
+        {
+            return true;
+        }
         return false;
+    }
+    // Helper function to determine the appropriate runtimeconfig.json file based on the project type
+    private static string GetRuntimeConfigFileBasedOnProjectType(string netDirectory, string projectName)
+    {
+        return Path.Combine(netDirectory, $"{projectName}.runtimeconfig.json");
     }
 
     // Helper function to determine the project name from the directory (get it from the .csproj file)
