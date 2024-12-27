@@ -1,18 +1,16 @@
-﻿using UpdateManager.DotNetUpgradeLibrary.Utilities;
-
-namespace UpdateManager.DotNetUpgradeLibrary.Services;
+﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class LibraryNetUpdateModelGenerator(IPackagesContext packageContext) : ILibraryNetUpdateModelGenerator
 {
     async Task<BasicList<LibraryNetUpgradeModel>> ILibraryNetUpdateModelGenerator.CreateLibraryNetUpdateModelListAsync()
     {
         BasicList<NuGetPackageModel> packages = await packageContext.GetPackagesAsync();
-        packages.RemoveAllAndObtain(x => x.TemporarilyIgnore || x.Framework == EnumTargetFramework.NetStandard);
+        packages.RemoveAllAndObtain(x => x.IsExcluded || x.Framework == EnumTargetFramework.NetStandard);
         BasicList<LibraryNetUpgradeModel> output = [];
         // Check if we need to filter packages for testing
         bool includeOnlyTests = LibraryInclusionGlobals.LibrariesToIncludeForTest.Count > 0;
         foreach (var package in packages)
         {
-            if (package.TemporarilyIgnore)
+            if (package.IsExcluded)
             {
                 continue; //ignore those.
             }
