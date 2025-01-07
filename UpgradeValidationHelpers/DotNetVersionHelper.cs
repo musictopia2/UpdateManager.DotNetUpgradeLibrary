@@ -52,7 +52,11 @@ public class DotNetVersionHelper
         {
             throw new InvalidOperationException("WebAssembly apps are not supported in this context.");
         }
-
+        BasicList<string> files = ff1.FileList(latestNetDirectory.FullName);
+        if (files.Count == 0)
+        {
+            return false; //if there are no files there, then still failed.
+        }
         // Determine the correct file to check based on whether this is a WebAssembly or Server-side app
         string depsFile = GetDepsFileBasedOnProjectType(latestNetDirectory.FullName, projectName);
         string runtimeConfigFile = GetRuntimeConfigFileBasedOnProjectType(latestNetDirectory.FullName, projectName);
