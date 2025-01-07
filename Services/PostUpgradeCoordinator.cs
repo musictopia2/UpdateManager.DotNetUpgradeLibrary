@@ -15,6 +15,7 @@ public class PostUpgradeCoordinator(IUpgradePhaseFactory factory)
         }
         foreach (var phase in list)
         {
+            await phase.InitAsync(); //try to initialize again anyways.  don't know if it will hurt or not (?)
             if (phase.ArePostUpgradeProcessesNeeded())
             {
                 Console.WriteLine($"Running process for {phase.Name}");
