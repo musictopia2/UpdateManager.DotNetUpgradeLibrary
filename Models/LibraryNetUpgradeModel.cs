@@ -1,5 +1,5 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Models;
-public class LibraryNetUpgradeModel : IPackageVersionable, INugetModel
+public class LibraryNetUpgradeModel : INugetModel
 {
     public string PackageName { get; set; } = "";
     public string Version { get; set; } = "";

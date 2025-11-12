@@ -2,7 +2,7 @@
 public static class DotNetProjectUpgradeHelper
 {
     public static async Task<bool> UpgradeProjectToLatestDotNetAsync<T>(string projectFilePath, BasicList<T> packages, bool alsoPostProgram = false)
-        where T: class, IPackageVersionable
+        where T: class, INugetModel
     {
         string version = bb1.Configuration!.GetNetVersion();
         CsProjEditor editor = new(projectFilePath);

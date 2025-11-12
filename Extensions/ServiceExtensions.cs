@@ -5,7 +5,7 @@ public static class ServiceExtensions
     {
         services.AddSingleton<IFeedPathResolver, FeedPathResolver>()
             .AddSingleton<ITestFileManager, TestFileManager>()
-            .AddSingleton<ITemplateNetUpdater, TemplateNetUpdater>()
+            //.AddSingleton<ITemplateNetUpdater, TemplateNetUpdater>()
             .AddSingleton<IBranchValidationService, BranchValidationService>()
             .AddSingleton<ILibraryDotNetUpgradeCommitter, LibraryDotNetUpgradeCommitter>()
             .AddSingleton<ILibraryNetUpdateModelGenerator, LibraryNetUpdateModelGenerator>()
