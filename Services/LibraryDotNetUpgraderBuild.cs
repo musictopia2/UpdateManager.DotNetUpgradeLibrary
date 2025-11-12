@@ -28,7 +28,9 @@ public class LibraryDotNetUpgraderBuild(IPostBuildCommandStrategy postBuildStrat
             }
         }
         editor.SaveChanges(); //forgot to save changes.
-        isSuccess = await ProjectBuilder.BuildProjectAsync(libraryModel.CsProjPath, "/p:SkipPostBuild=true", cancellationToken);
+        //try to make the post processes run after all.  even though it will use older libraries for now, that is how it goes.
+        isSuccess = await ProjectBuilder.BuildProjectAsync(libraryModel.CsProjPath, cancellationToken: cancellationToken);
+        //isSuccess = await ProjectBuilder.BuildProjectAsync(libraryModel.CsProjPath, "/p:SkipPostBuild=true", cancellationToken);
         string directory = Path.GetDirectoryName(libraryModel.CsProjPath)!;
         if (DotNetVersionHelper.IsExpectedVersionInReleaseBuild(directory) == false)
         {

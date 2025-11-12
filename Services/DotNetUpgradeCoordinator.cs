@@ -5,6 +5,7 @@ public class DotNetUpgradeCoordinator(
     IDotNetUpgradeConfigReader dotNetUpgradeConfig,
     IDotNetVersionUpdater versionUpdater,
     INetVersionUpdateContext netVersionUpdateContext,
+    IPackagesContext packageContext, //i assume i need this so it can update this.
     IBranchValidationService branchService,
     ILibraryDotNetUpgraderBuild libraryDotNetUpgraderBuild,
     IPackageFeedManager packageFeedManager,
@@ -255,6 +256,11 @@ public class DotNetUpgradeCoordinator(
             {
                 library.Status = EnumDotNetUpgradeStatus.Completed; //this means if everything is upgraded, then its already complete period.
                 return; //i think nothing else now.
+            }
+            if (library.PackageType == EnumFeedType.Public)
+            {
+                string version = library.Version.StartMajorVersion();
+                await packageContext.UpdatePackageVersionAsync(library.PackageName, version);
             }
             if (await libraryDotNetUpgraderBuild.BuildLibraryAsync(library, config, libraries) == false)
             {
