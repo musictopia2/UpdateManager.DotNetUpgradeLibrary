@@ -2,11 +2,19 @@
 public class DotNetVersionUpdater : IDotNetVersionUpdater
 {
     private static readonly string _netPath = bb1.Configuration!.GetNetPath();
+    public static void ReloadConfiguration()
+    {
+        if (bb1.Configuration is IConfigurationRoot root)
+        {
+            root.Reload();
+        }
+    }
     async Task IDotNetVersionUpdater.UpdateNetVersionAsync(int newNetVersion)
     {
         string oldFileContent = await ff1.AllTextAsync(_netPath);
         string newContent = GetContents(newNetVersion);
         await ff1.WriteAllTextAsync(_netPath, newContent);
+        ReloadConfiguration(); //trying this.  hopefully fixes the problem for next year.
         bool success = VerifyFileContent(newNetVersion);
         if (!success)
         {
