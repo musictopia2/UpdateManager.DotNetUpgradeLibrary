@@ -38,7 +38,6 @@ public static class DotNetVersionChecker
     {
         try
         {
-            // Execute 'dotnet --list-runtimes' command to get the installed runtimes
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = "dotnet",
@@ -47,24 +46,41 @@ public static class DotNetVersionChecker
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
+
             using var process = Process.Start(processStartInfo);
             string output = process!.StandardOutput.ReadToEnd();
-            var installedVersions = output.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries)
-                                          .Select(line => line.Trim())
-                                          .Where(line => line.Contains("Microsoft.NETCore.App"))
-                                          .Select(ExtractVersion)
-                                          .Where(version => version.HasValue)
-                                          .ToBasicList();
-            if (installedVersions.Count != 0)
-            {
-                // Return the highest version found
-                return installedVersions.Max();
-            }
-            else
+
+            var installedVersions = output
+                .Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries)
+                .Select(line => line.Trim())
+                // Check for all Microsoft runtimes, not just NETCore
+                .Where(line => line.StartsWith("Microsoft.") && line.Contains(' '))
+                .Select(line =>
+                {
+                    // Line format: "Microsoft.NETCore.App 10.0.0 [C:\Path]"
+                    var parts = line.Split(' ');
+                    if (parts.Length < 2)
+                    {
+                        return (int?)null;
+                    }
+
+                    var versionStr = parts[1];
+                    if (Version.TryParse(versionStr, out var v))
+                    {
+                        return v.Major;
+                    }
+                    return null;
+                })
+                .Where(v => v.HasValue)
+                .ToBasicList();
+
+            if (installedVersions.Count == 0)
             {
                 Console.WriteLine("No .NET runtimes found.");
-                return null; // No version found
+                return null;
             }
+
+            return installedVersions.Max();
         }
         catch (Exception ex)
         {
