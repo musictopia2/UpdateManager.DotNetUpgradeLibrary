@@ -29,4 +29,12 @@ public class PostUpgradeCoordinator(IUpgradePhaseFactory factory)
             }
         }
     }
+    public async Task ResetProcessesManuallyAsync()
+    {
+        var list = factory.CreateUpgradePhases;
+        foreach (var item in list)
+        {
+            await item.ResetFlagsForNewVersionAsync();
+        }
+    }
 }
