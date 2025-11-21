@@ -1,7 +1,7 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class LibraryDotNetUpgraderBuild(IPostBuildCommandStrategy postBuildStrategy) : ILibraryDotNetUpgraderBuild
 {
-    async Task<bool> ILibraryDotNetUpgraderBuild.BuildLibraryAsync(LibraryNetUpgradeModel libraryModel, DotNetUpgradeBasicConfig dotNetModel, BasicList<LibraryNetUpgradeModel> libraries, CancellationToken cancellationToken)
+    async Task<bool> ILibraryDotNetUpgraderBuild.BuildLibraryAsync(LibraryNetUpgradeModel libraryModel, BasicList<LibraryNetUpgradeModel> libraries, CancellationToken cancellationToken)
     {
         CsProjEditor editor = new(libraryModel.CsProjPath);
         string netVersion = bb1.Configuration!.GetNetVersion();
@@ -16,15 +16,12 @@ public class LibraryDotNetUpgraderBuild(IPostBuildCommandStrategy postBuildStrat
         {
             return false;
         }
-        if (dotNetModel.IsTestMode == false)
+        if (postBuildStrategy.ShouldRunPostBuildCommand(libraryModel))
         {
-            if (postBuildStrategy.ShouldRunPostBuildCommand(libraryModel))
+            isSuccess = editor.UpdatePostBuildCommand(netVersion);
+            if (isSuccess == false)
             {
-                isSuccess = editor.UpdatePostBuildCommand(netVersion);
-                if (isSuccess == false)
-                {
-                    return false;
-                }
+                return false;
             }
         }
         editor.SaveChanges(); //forgot to save changes.
@@ -38,9 +35,5 @@ public class LibraryDotNetUpgraderBuild(IPostBuildCommandStrategy postBuildStrat
             return false; //still failed because its not in .net
         }
         return isSuccess;
-    }
-    async Task<bool> ILibraryDotNetUpgraderBuild.AlreadyUpgradedAsync(LibraryNetUpgradeModel upgradeModel, DotNetUpgradeBasicConfig dotNetModel)
-    {
-        return await upgradeModel.AlreadyUpgradedAsync(dotNetModel);
     }
 }

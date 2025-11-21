@@ -1,2 +1,2 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Models;
-public readonly record struct UpgradeProcessState(EnumUpgradePhase Start, DotNetUpgradeBasicConfig NetUpgrade, bool HasRegularCompleted);
+public readonly record struct UpgradeProcessState(EnumUpgradePhase Start, bool HasRegularCompleted);

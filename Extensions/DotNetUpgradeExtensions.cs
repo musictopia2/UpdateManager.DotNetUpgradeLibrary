@@ -1,11 +1,12 @@
-﻿using UpdateManager.DotNetUpgradeLibrary.Utilities;
-
-namespace UpdateManager.DotNetUpgradeLibrary.Extensions;
+﻿namespace UpdateManager.DotNetUpgradeLibrary.Extensions;
 internal static class DotNetUpgradeExtensions
 {
-    public static bool NeedsToUpdateVersion(this int version)
+    extension(int version)
     {
-        int targetVersion = version + 1;
-        return DotNetVersionChecker.IsDotNetVersionInstalled(targetVersion);
+        public bool NeedsToUpdateVersion()
+        {
+            int targetVersion = version + 1;
+            return DotNetVersionChecker.IsDotNetVersionInstalled(targetVersion);
+        }
     }
 }

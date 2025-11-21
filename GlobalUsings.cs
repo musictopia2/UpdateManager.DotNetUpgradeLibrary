@@ -17,7 +17,6 @@ global using UpdateManager.DotNetUpgradeLibrary.Models;
 //global using UpdateManager.CoreLibrary.TemplateHelpers;
 global using UpdateManager.DotNetUpgradeLibrary.Interfaces;
 global using UpdateManager.DotNetUpgradeLibrary.Extensions;
-global using UpdateManager.DotNetUpgradeLibrary.TestHelpers;
 global using UpdateManager.DotNetUpgradeLibrary.UpgradeValidationHelpers;
 global using UpdateManager.CoreLibrary.ProjectFileHelpers;
 global using Microsoft.Extensions.DependencyInjection;

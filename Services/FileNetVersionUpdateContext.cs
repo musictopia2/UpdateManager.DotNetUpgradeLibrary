@@ -1,7 +1,7 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class FileNetVersionUpdateContext(ILibraryNetUpdateModelGenerator generator) : INetVersionUpdateContext
 {
-    private static readonly string _libraryPath = bb1.Configuration!.GetLibraryPath();
+    private static readonly string _libraryPath = bb1.Configuration!.LibraryPath;
     async Task<BasicList<LibraryNetUpgradeModel>> INetVersionUpdateContext.GetLibrariesForUpdateAsync()
     {
         BasicList<LibraryNetUpgradeModel> list = await jj1.RetrieveSavedObjectAsync<BasicList<LibraryNetUpgradeModel>>(_libraryPath);

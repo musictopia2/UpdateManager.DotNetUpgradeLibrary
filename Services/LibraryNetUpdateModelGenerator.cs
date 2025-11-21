@@ -34,7 +34,7 @@ public class LibraryNetUpdateModelGenerator(IPackagesContext packageContext) : I
                 : "0.0.1"; // Placeholder version for non-local packages, should be updated later
             output.Add(upgrade);
         }
-        output = LibraryDependencyResolver.ResolveDependencies(output); //needs to resolve dependencies as part of the steps.
+        output = LibraryDependencyResolver<LibraryNetUpgradeModel>.ResolveDependencies(output); //needs to resolve dependencies as part of the steps.
         return output;
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace UpdateManager.DotNetUpgradeLibrary.Services;
 public class DotNetVersionUpdater : IDotNetVersionUpdater
 {
-    private static readonly string _netPath = bb1.Configuration!.GetNetPath();
+    private static readonly string _netPath = bb1.Configuration!.NetPath;
     public static void ReloadConfiguration()
     {
         if (bb1.Configuration is IConfigurationRoot root)

@@ -4,8 +4,6 @@ public static class ServiceExtensions
     public static IServiceCollection RegisterDotNetUpgradeServices(this IServiceCollection services, bool useFileBased = true, bool alsoBuilder = true, bool alsonugetPacker = true, Action<IServiceCollection>? additionalServices = null)
     {
         services.AddSingleton<IFeedPathResolver, FeedPathResolver>()
-            .AddSingleton<ITestFileManager, TestFileManager>()
-            //.AddSingleton<ITemplateNetUpdater, TemplateNetUpdater>()
             .AddSingleton<IBranchValidationService, BranchValidationService>()
             .AddSingleton<ILibraryDotNetUpgradeCommitter, LibraryDotNetUpgradeCommitter>()
             .AddSingleton<ILibraryNetUpdateModelGenerator, LibraryNetUpdateModelGenerator>()
@@ -23,8 +21,7 @@ public static class ServiceExtensions
         }
         if (useFileBased)
         {
-            services.AddSingleton<IDotNetUpgradeConfigReader, DotNetUpgradeConfigReader>()
-                .AddSingleton<INetVersionUpdateContext, FileNetVersionUpdateContext>()
+            services.AddSingleton<INetVersionUpdateContext, FileNetVersionUpdateContext>()
                 .AddSingleton<IPackagesContext, FilePackagesContext>();
         }
         additionalServices?.Invoke(services);
