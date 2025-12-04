@@ -5,7 +5,7 @@ public static class ProjectVersionChecker
     {
         CsProjEditor editor = new(csProj);
         string versionUsed = editor.VersionUsed();
-        string latestVersion = bb1.Configuration!.GetNetVersion();
+        string latestVersion = bb1.Configuration!.NetVersion;
         return latestVersion == versionUsed;
     }
 }

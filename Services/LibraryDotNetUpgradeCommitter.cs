@@ -9,7 +9,7 @@ public class LibraryDotNetUpgradeCommitter(IUpgradePhaseHandler handler) : ILibr
         {
             return true; //because someone else is handling this later.
         }
-        rets = await GitHubCommitter.CommitAndPushToGitHubAsync(updateModel.CsProjPath, $"Updated To {bb1.Configuration!.GetNetVersion()}", cancellationToken);
+        rets = await GitHubCommitter.CommitAndPushToGitHubAsync(updateModel.CsProjPath, $"Updated To {bb1.Configuration!.NetVersion}", cancellationToken);
         return rets;
     }
 }

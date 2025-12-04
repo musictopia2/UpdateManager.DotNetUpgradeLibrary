@@ -6,7 +6,7 @@ public class TemplateVersionVerifier
     {
         // Create a temporary directory for the test project
         string tempProjectDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-        string expectedVersion = bb1.Configuration!.GetNetVersion();
+        string expectedVersion = bb1.Configuration!.NetVersion;
         try
         {
             // Step 1: Create the project using the template

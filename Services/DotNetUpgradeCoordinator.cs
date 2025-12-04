@@ -18,7 +18,7 @@ public class DotNetUpgradeCoordinator(
         await InitializePossibleCustomProcessesAsync();
         // Check if the system needs an update
         bool needsUpdate;
-        int version = int.Parse(bb1.Configuration!.GetNetVersion());
+        int version = int.Parse(bb1.Configuration!.NetVersion);
         needsUpdate = version.NeedsToUpdateVersion();
         if (needsUpdate)
         {
@@ -90,7 +90,7 @@ public class DotNetUpgradeCoordinator(
         }
         if (library.PackageType == EnumFeedType.Public)
         {
-            library.Version = $"{bb1.Configuration!.GetNetVersion()}.0.1";
+            library.Version = $"{bb1.Configuration!.NetVersion}.0.1";
         }
         if (library.Status == EnumDotNetUpgradeStatus.None)
         {

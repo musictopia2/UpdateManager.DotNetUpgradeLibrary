@@ -4,7 +4,7 @@ public class LibraryDotNetUpgraderBuild(IPostBuildCommandStrategy postBuildStrat
     async Task<bool> ILibraryDotNetUpgraderBuild.BuildLibraryAsync(LibraryNetUpgradeModel libraryModel, BasicList<LibraryNetUpgradeModel> libraries, CancellationToken cancellationToken)
     {
         CsProjEditor editor = new(libraryModel.CsProjPath);
-        string netVersion = bb1.Configuration!.GetNetVersion();
+        string netVersion = bb1.Configuration!.NetVersion;
         bool isSuccess;
         isSuccess = editor.UpdateNetVersion(netVersion);
         if (isSuccess == false)

@@ -68,7 +68,7 @@ public class DotNetVersionHelper
         }
 
         // Now, we need to validate the version in .deps.json
-        string expectedVersion = bb1.Configuration!.GetNetVersion();
+        string expectedVersion = bb1.Configuration!.NetVersion;
         HtmlParser parses = new();
         string searches;
         if (File.Exists(depsFile))

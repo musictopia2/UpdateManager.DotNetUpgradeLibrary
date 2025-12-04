@@ -31,7 +31,7 @@ public class DotNetVersionUpdater : IDotNetVersionUpdater
     private static bool VerifyFileContent(int versionExpected)
     {
         // Retrieve the version from IConfiguration after it has been reloaded
-        string versionFoundString = bb1.Configuration!.GetNetVersion();
+        string versionFoundString = bb1.Configuration!.NetVersion;
 
         // Attempt to parse the NetVersion from IConfiguration
         bool rets = int.TryParse(versionFoundString, out int versionFoundInt);
