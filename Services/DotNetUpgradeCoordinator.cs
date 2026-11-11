@@ -112,8 +112,14 @@ public class DotNetUpgradeCoordinator(
             
             if (library.PackageType == EnumFeedType.Public)
             {
+                // Reload changes saved by the previous post-build program
+                // before updating and saving the next package.
+                await packageContext.GetPackagesAsync();
+
                 string version = library.Version.StartMajorVersion();
-                await packageContext.UpdatePackageVersionAsync(library.PackageName, version);
+
+                await packageContext.UpdatePackageVersionAsync(
+                    library.PackageName, version);
             }
             if (await libraryDotNetUpgraderBuild.BuildLibraryAsync(library, libraries) == false)
             {
